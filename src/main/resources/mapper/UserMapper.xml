@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mo.oj.mapper.UserMapper">
+    <insert id="insertUser" parameterType="com.mo.oj.pojo.User">
+        insert into user(name,
+                         password,
+                         role,
+                         email,
+                         email_status,
+                         point,
+                         picture,
+                         create_time)
+        values (#{name},
+                #{password},
+                #{role},
+                #{email},
+                #{email_status},
+                #{point},
+                #{picture},
+                now())
+    </insert>
+
+
+    <update id="updateUserById" parameterType="com.mo.oj.pojo.User">
+        update user set
+        <if test="name !=null and name !=''">
+            password = #{password},
+        </if>
+        <if test="password !=null and password !=''">
+            password = #{password},
+        </if>
+        <if test="sex !=null">
+            sex = #{sex},
+        </if>
+        <if test="role !=null">
+            role = #{role},
+        </if>
+        <if test="birthday !=null">
+            birthday = #{birthday},
+        </if>
+        <if test="email !=null and email !=''">
+            email = #{email},
+        </if>
+        <if test="email_status !=null">
+            email_status = #{email_status},
+        </if>
+        <if test="point !=null">
+            point = #{point},
+        </if>
+        <if test="verify_code !=null and verify_code !=''">
+            verify_code = #{verify_code},
+        </if>
+        <if test="prefer_language !=null">
+            prefer_language = #{prefer_language},
+        </if>
+        <if test="picture !=null and picture !=''">
+            picture = #{picture},
+        </if>
+        modify_time=now(),
+        where id=#{id}
+    </update>
+
+    <update id="updatePasswordByNameAndEmailAndVerifyCode" parameterType="com.mo.oj.pojo.User">
+        update user
+        set password   = #{password},
+            modify_time=now()
+        where name = #{name}
+          and email = #{email}
+          and verify_code = #{verify_code}
+    </update>
+
+    <!--<select id="findMaterialListByNameAndSupplier" resultType="java.lang.Integer" parameterType="java.util.Map">
+
+        select m.*,s.name as supplier_name from material m , supplier s
+        where 1=1
+        <if test="name !=null and name !=''">
+            and m.name like concat(concat('%',#{name}),'%')
+        </if>
+        <if test="supplier_id !=null and supplier_id !=''">
+            and m.supplier_id =#{supplier_id}
+        </if>
+        and m.supplier_id=s.id
+        ORDER BY m.create_time desc limit #{start},10
+    </select>
+
+
+    <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from m_in_out_repository
+        where 1=1
+        <if test="bid !=null and bid !=''">
+            and bid like concat(concat('%',#{bid}),'%')
+        </if>
+        <if test="status !=null">
+            and status =#{status}
+        </if>
+        <if test="repository_id !=null">
+            and repository_id =#{repository_id}
+        </if>
+        <if test="dayTime !=null">
+            and DATE_SUB(CURDATE(), INTERVAL #{dayTime} DAY) &lt;= date(create_time)
+        </if>
+        and status is not null
+    </select>-->
+
+</mapper>
