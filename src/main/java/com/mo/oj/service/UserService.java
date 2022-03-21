@@ -35,5 +35,5 @@ public interface UserService {
      * @param user
      * @return
      */
-    public boolean register(User user);
+    public String register(User user);
 }

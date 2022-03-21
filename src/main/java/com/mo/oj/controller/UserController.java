@@ -47,11 +47,11 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/register")
-    public boolean register(User user) {
+    public String register(User user) {
         if (IsEmpty.isEmptyOfString(user.getName()) ||
                 IsEmpty.isEmptyOfString(user.getPassword()) ||
                 IsEmpty.isEmptyOfString(user.getEmail()))
-            return false;
+            return "error";
         return this.userService.register(user);
     }
 

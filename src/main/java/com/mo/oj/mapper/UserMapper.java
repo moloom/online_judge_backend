@@ -40,6 +40,15 @@ public interface UserMapper {
     public User searchUserByName(String name);
 
     /**
+     * 查找一条user记录；条件 email
+     *
+     * @param email
+     * @return
+     */
+    @Select("select count(1) from user where email=#{email}")
+    public Integer searchUserByEmail(String email);
+
+    /**
      * 修改用户信息
      *
      * @param user
@@ -47,9 +56,6 @@ public interface UserMapper {
      */
     public Integer updateUserById(User user);
 
-
-    //可能造成一个邮箱注册多个账号；现在想法：在注册时就判断邮箱是否被注册
-    //这个方法，还需修改前端的页面，让用户输完邮箱时，昵称必须填写
     /**
      * 修改用户校验码，条件email，name
      *

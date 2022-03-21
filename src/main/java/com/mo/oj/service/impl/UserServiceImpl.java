@@ -1,8 +1,9 @@
-package com.mo.oj.service;
+package com.mo.oj.service.impl;
 
 import com.mo.oj.mapper.UserMapper;
 import com.mo.oj.pojo.Mail;
 import com.mo.oj.pojo.User;
+import com.mo.oj.service.UserService;
 import com.mo.oj.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,11 +87,14 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public boolean register(User user) {
-        //判断是否昵称是否已被注册
+    public String register(User user) {
+        //判断是否昵称、邮箱是否已被注册
         User user2 = this.userMapper.searchUserByName(user.getName());
+        Integer count = this.userMapper.searchUserByEmail(user.getEmail());
         if (user2 != null)
-            return false;
+            return "nameError";
+        if (count != 0)
+            return "emailError";
         //补充初始信息
         user.setRole(1);
         user.setEmail_status(0);
@@ -99,7 +103,7 @@ public class UserServiceImpl implements UserService {
         int flag = this.userMapper.insertUser(user);
         System.out.println("register:::::" + flag);
         if (flag != 1)
-            return false;
-        return true;
+            return "error";
+        return "success";
     }
 }
