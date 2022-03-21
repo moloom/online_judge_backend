@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/problems")
 public class ProblemController {
 
-    @Autowired
+    @Resource
     ProblemsService problemsService;
 
     @PostMapping("/searchTagAll")
@@ -24,10 +25,11 @@ public class ProblemController {
         return this.problemsService.searchTagAll();
     }
 
-    @PostMapping("/serachProblemListByConditions")
-    public List<Problem> serachProblemListByConditions(Problem problem) {
-        System.out.println("serachProblemListByConditions===\n" + problem);
-        //少了用户id条件，需要用户id查询出状态这个字段。
-        return null;
-    }
+    @PostMapping("/searchProblemListByConditions")
+    public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start) {
+        System.out.println("searchProblemListByConditions=" + "\n" + difficulty + "\n" + status + "\n" + tag + "\n" + keyword + "\n" + user_id + "\n" + start);
+        if (start == null)
+            start = 0;
+        return this.problemsService.searchProblemListByConditions(difficulty, status, tag, keyword, user_id, start);
+    }//不能清楚条件，点击未解决会报错，
 }

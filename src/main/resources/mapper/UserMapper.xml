@@ -69,38 +69,64 @@
           and email = #{email}
           and verify_code = #{verify_code}
     </update>
+    <!--
+        <select id="searchProblemListByCondition" resultType="com.mo.oj.pojo.Problem">
+            select p.*
+            from problem p ,tag t
+            where 1=1 and
+            <if test="status!=null and status!=0">
+                p.id
+                <if test="status!=null and status ==1">
+                    /* 状态：未开始；有提交记录的，都是做了的题目，所以取个反就行啦！*/
+                    not
+                </if>
+                in
+                (select problem_id
+                from submit
+                where 1=1
+                <if test="status!=null and status ==2">
+                    and status = 1 /* 状态：已解决；有提交记录，要查询当前用户已通过的题目*/
+                </if>
+                <if test="status!=null and status ==3">
+                    /* 状态：尝试过；有提交记录的，且用户当前提交了代码但是未做对的题目。我的想法是：先排除掉用户以解决的题目*/
+                    and status ！= 1
+                    and problem_id not in (select problem_id from submit where status =1 and user_id=#{user_id})
+                </if>
+                /*处理边界值条件，*/
+                <if test="user_id!=null and status!=null and status &lt;=3 and status &gt;=1">
+                    and user_id = #{user_id}
+                </if>
+                )
+            </if>
+            <if test="tag!=null and tag!=0">
+                and t.id in(select problem_id from problem_tag where tag_id=#{tag})
+            </if>
+            <if test="difficulty!=null and difficulty !=0">
+                and p.difficulty=#{difficulty}
+            </if>
+            <if test="keyword!=null and keyword !=''">
+                and( p.title like concat(concat('%',#{keyword}),'%') or p.id like concat(concat('%',#{keyword}),'%'))
+            </if>
+            order by p.id ASC limit #{start},30
+        </select>
 
-    <!--<select id="findMaterialListByNameAndSupplier" resultType="java.lang.Integer" parameterType="java.util.Map">
 
-        select m.*,s.name as supplier_name from material m , supplier s
-        where 1=1
-        <if test="name !=null and name !=''">
-            and m.name like concat(concat('%',#{name}),'%')
-        </if>
-        <if test="supplier_id !=null and supplier_id !=''">
-            and m.supplier_id =#{supplier_id}
-        </if>
-        and m.supplier_id=s.id
-        ORDER BY m.create_time desc limit #{start},10
-    </select>
-
-
-    <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(1) from m_in_out_repository
-        where 1=1
-        <if test="bid !=null and bid !=''">
-            and bid like concat(concat('%',#{bid}),'%')
-        </if>
-        <if test="status !=null">
-            and status =#{status}
-        </if>
-        <if test="repository_id !=null">
-            and repository_id =#{repository_id}
-        </if>
-        <if test="dayTime !=null">
-            and DATE_SUB(CURDATE(), INTERVAL #{dayTime} DAY) &lt;= date(create_time)
-        </if>
-        and status is not null
-    </select>-->
+        <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+            select count(1) from m_in_out_repository
+            where 1=1
+            <if test="bid !=null and bid !=''">
+                and bid like concat(concat('%',#{bid}),'%')
+            </if>
+            <if test="status !=null">
+                and status =#{status}
+            </if>
+            <if test="repository_id !=null">
+                and repository_id =#{repository_id}
+            </if>
+            <if test="dayTime !=null">
+                and DATE_SUB(CURDATE(), INTERVAL #{dayTime} DAY) &lt;= date(create_time)
+            </if>
+            and status is not null
+        </select>-->
 
 </mapper>

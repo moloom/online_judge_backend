@@ -1,6 +1,7 @@
 package com.mo.oj.mapper;
 
 import com.mo.oj.pojo.Problem;
+import com.mo.oj.pojo.Submit;
 import com.mo.oj.pojo.Tag;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -26,5 +27,14 @@ public interface ProblemsMapper {
      * @param problem
      * @return
      */
-    public List<Problem> serachProblemListByConditions(Problem problem);
+    public List<Problem> searchProblemListByConditions(Problem problem);
+
+    /**
+     * 查询用户当前已解答的题目list，条件：user_id，status
+     *
+     * @param user_id
+     * @param status
+     * @return
+     */
+    public List<Problem> searchProblemListByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id,Integer start);
 }

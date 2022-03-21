@@ -27,6 +27,36 @@ public class Problem {
     Integer modify_by;
     Timestamp modify_time;
 
+    //额外字段
+    Integer tagName;
+    String difficultyName;
+    String passRate;
+
+
+    public String getPassRate() {
+        return passRate;
+    }
+
+    public void setPassRate(String passRate) {
+        this.passRate = passRate;
+    }
+
+    public String getDifficultyName() {
+        return difficultyName;
+    }
+
+    public void setDifficultyName(String difficultyName) {
+        this.difficultyName = difficultyName;
+    }
+
+    public Integer getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(Integer tagName) {
+        this.tagName = tagName;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -49,6 +79,17 @@ public class Problem {
 
     public void setDifficulty(Integer difficulty) {
         this.difficulty = difficulty;
+        switch (difficulty) {
+            case 1:
+                this.setDifficultyName("简单");
+                break;
+            case 2:
+                this.setDifficultyName("中等");
+                break;
+            case 3:
+                this.setDifficultyName("困难");
+                break;
+        }
     }
 
     public Integer getQuestion_type() {
@@ -113,6 +154,14 @@ public class Problem {
 
     public void setSubmit_times(Integer submit_times) {
         this.submit_times = submit_times;
+        if (submit_pass_times != null) {
+            Float m1 = (float) submit_pass_times / (float) submit_times;
+            if (!m1.isNaN()) {
+                m1 = (float) Math.round(m1 * 10000) / 100;
+                passRate = String.valueOf(m1) + "%";
+            } else passRate = "0%";
+            System.out.println("passRate" + passRate);
+        }
     }
 
     public Integer getSubmit_pass_times() {
@@ -121,6 +170,14 @@ public class Problem {
 
     public void setSubmit_pass_times(Integer submit_pass_times) {
         this.submit_pass_times = submit_pass_times;
+        if (submit_times != null) {
+            Float m1 = (float) submit_pass_times / (float) submit_times;
+            if (!m1.isNaN()) {
+                m1 = (float) Math.round(m1 * 10000) / 100;
+                passRate = String.valueOf(m1) + "%";
+            } else passRate = "0%";
+            System.out.println("passRate" + passRate);
+        }
     }
 
     public Integer getSubmit_number() {
@@ -237,6 +294,9 @@ public class Problem {
                 ", create_time=" + create_time +
                 ", modify_by=" + modify_by +
                 ", modify_time=" + modify_time +
+                ", tagName=" + tagName +
+                ", difficultyName='" + difficultyName + '\'' +
+                ", passRate=" + passRate +
                 '}';
     }
 }

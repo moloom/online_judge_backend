@@ -17,8 +17,12 @@ public interface ProblemsService {
     /**
      * 查询题目list，条件：difficulty、state、tag、title or id，注：id也是要模糊查询的
      *
-     * @param problem
+     * @param difficulty
+     * @param status
+     * @param tag
+     * @param keyword
+     * @param user_id
      * @return
      */
-    public List<Problem> serachProblemListByConditions(Problem problem);
+    public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start);
 }

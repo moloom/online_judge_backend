@@ -7,13 +7,17 @@ import com.mo.oj.service.UserService;
 import com.mo.oj.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     UserMapper userMapper;
 
     /**
@@ -22,6 +26,7 @@ public class UserServiceImpl implements UserService {
      * @param user
      * @return
      */
+    @Transactional(readOnly = true, timeout = 15)
     @Override
     public User login(User user) {
         User newUser;
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
      * @param user
      * @return
      */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
     public boolean sendEmailVerifyCode(User user) {
         try {
@@ -72,6 +78,7 @@ public class UserServiceImpl implements UserService {
      * @param user
      * @return
      */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
     @Override
     public boolean retrievePassword(User user) {
         int flag = this.userMapper.updatePasswordByNameAndEmailAndVerifyCode(user);
@@ -86,6 +93,7 @@ public class UserServiceImpl implements UserService {
      * @param user
      * @return
      */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
     @Override
     public String register(User user) {
         //判断是否昵称、邮箱是否已被注册

@@ -14,7 +14,7 @@ public class Submit {
     Integer language;
     String error_info;
     Timestamp create_time;
-    Integer create_by;
+    Integer user_id;
 
     public Integer getId() {
         return id;
@@ -104,12 +104,12 @@ public class Submit {
         this.create_time = create_time;
     }
 
-    public Integer getCreate_by() {
-        return create_by;
+    public Integer getUser_id() {
+        return user_id;
     }
 
-    public void setCreate_by(Integer create_by) {
-        this.create_by = create_by;
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class Submit {
                 ", language=" + language +
                 ", error_info='" + error_info + '\'' +
                 ", create_time=" + create_time +
-                ", create_by=" + create_by +
+                ", user_id=" + user_id +
                 '}';
     }
 }
