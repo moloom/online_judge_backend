@@ -25,4 +25,13 @@ public interface ProblemsService {
      * @return
      */
     public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start);
+
+    /**
+     * 查询一条problem信息，条件id
+     *
+     * @param id
+     * @return
+     */
+    public Problem searchProblemById(Integer id);
+
 }

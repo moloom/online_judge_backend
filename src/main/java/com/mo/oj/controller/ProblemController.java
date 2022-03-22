@@ -28,8 +28,15 @@ public class ProblemController {
     @PostMapping("/searchProblemListByConditions")
     public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start) {
         System.out.println("searchProblemListByConditions=" + "\n" + difficulty + "\n" + status + "\n" + tag + "\n" + keyword + "\n" + user_id + "\n" + start);
-        if (start == null)
-            start = 0;
+        if (start == null) start = 0;
         return this.problemsService.searchProblemListByConditions(difficulty, status, tag, keyword, user_id, start);
-    }//不能清楚条件，点击尝试过会报错，
+    }
+
+
+    @PostMapping("/searchProblemById")
+    public Problem searchProblemById(Integer id) {
+        return this.problemsService.searchProblemById(id);
+    }
+
+
 }

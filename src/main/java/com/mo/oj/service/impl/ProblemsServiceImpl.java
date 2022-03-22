@@ -51,4 +51,16 @@ public class ProblemsServiceImpl implements ProblemsService {
         System.out.println("submitList" + problemList);
         return problemList;
     }
+
+    /**
+     * 查询一条problem信息，条件id
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public Problem searchProblemById(Integer id) {
+        return this.problemsMapper.searchProblemById(id);
+    }
 }

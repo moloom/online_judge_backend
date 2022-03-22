@@ -23,7 +23,7 @@
             </if>
             <if test="status!=null and status ==3">
                 /* 状态：尝试过；有提交记录的，且用户当前提交了代码但是未做对的题目。我的想法是：先排除掉用户以解决的题目*/
-                and status ！= 1
+                and status != 1
                 and problem_id not in (select problem_id from submit where status =1 and user_id=#{user_id})
             </if>
             /*处理边界值条件，*/

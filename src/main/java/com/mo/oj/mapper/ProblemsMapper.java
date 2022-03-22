@@ -36,5 +36,14 @@ public interface ProblemsMapper {
      * @param status
      * @return
      */
-    public List<Problem> searchProblemListByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id,Integer start);
+    public List<Problem> searchProblemListByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start);
+
+    /**
+     * 查询一条problem信息，条件id
+     *
+     * @param id
+     * @return
+     */
+    @Select("select * from problem p where id=#{id}")
+    public Problem searchProblemById(Integer id);
 }
