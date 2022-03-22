@@ -31,5 +31,5 @@ public class ProblemController {
         if (start == null)
             start = 0;
         return this.problemsService.searchProblemListByConditions(difficulty, status, tag, keyword, user_id, start);
-    }//不能清楚条件，点击未解决会报错，
+    }//不能清楚条件，点击尝试过会报错，
 }
