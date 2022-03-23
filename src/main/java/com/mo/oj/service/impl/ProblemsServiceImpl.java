@@ -1,12 +1,14 @@
 package com.mo.oj.service.impl;
 
 import com.mo.oj.mapper.ProblemsMapper;
+import com.mo.oj.pojo.Favorite;
 import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.Submit;
 import com.mo.oj.pojo.Tag;
 import com.mo.oj.service.ProblemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -62,5 +64,44 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Override
     public Problem searchProblemById(Integer id) {
         return this.problemsMapper.searchProblemById(id);
+    }
+
+    /**
+     * 判断当前用户所选的题目是否被收藏
+     *
+     * @param userId
+     * @param problemId
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public Boolean isFavorite(Integer userId, Integer problemId) {
+        int count = this.problemsMapper.searchFavoriteCountByUserIdAndProblemId(userId, problemId);
+        if (count == 0)
+            return false;
+        else
+            return true;
+    }
+
+    /**
+     * 收藏或者取消收藏
+     *
+     * @param favorite
+     * @param isFavorite
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
+    @Override
+    public Boolean updateFavorite(Favorite favorite, boolean isFavorite) {
+        if (isFavorite) {
+            int count = this.problemsMapper.deleteFavorite(favorite);
+            if (count != 1)
+                return false;
+        } else {
+            int count = this.problemsMapper.addFavorite(favorite);
+            if (count != 1)
+                return false;
+        }
+        return true;
     }
 }

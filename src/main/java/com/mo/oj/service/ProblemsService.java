@@ -1,5 +1,6 @@
 package com.mo.oj.service;
 
+import com.mo.oj.pojo.Favorite;
 import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.Tag;
 
@@ -33,5 +34,23 @@ public interface ProblemsService {
      * @return
      */
     public Problem searchProblemById(Integer id);
+
+    /**
+     * 判断当前用户所选的题目是否被收藏
+     *
+     * @param userId
+     * @param problemId
+     * @return
+     */
+    public Boolean isFavorite(Integer userId, Integer problemId);
+
+    /**
+     * 收藏或者取消收藏
+     *
+     * @param favorite
+     * @param isFavorite
+     * @return
+     */
+    public Boolean updateFavorite(Favorite favorite, boolean isFavorite);
 
 }

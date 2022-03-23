@@ -13,6 +13,7 @@ public class Problem {
     String out_format;
     String in_example;
     String out_example;
+    String notice;
     Integer submit_times;
     Integer submit_pass_times;
     Integer submit_number;
@@ -148,6 +149,14 @@ public class Problem {
         this.out_example = out_example;
     }
 
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
     public Integer getSubmit_times() {
         return submit_times;
     }
@@ -281,6 +290,7 @@ public class Problem {
                 ", out_format='" + out_format + '\'' +
                 ", in_example='" + in_example + '\'' +
                 ", out_example='" + out_example + '\'' +
+                ", notice='" + notice + '\'' +
                 ", submit_times=" + submit_times +
                 ", submit_pass_times=" + submit_pass_times +
                 ", submit_number=" + submit_number +
@@ -296,7 +306,7 @@ public class Problem {
                 ", modify_time=" + modify_time +
                 ", tagName=" + tagName +
                 ", difficultyName='" + difficultyName + '\'' +
-                ", passRate=" + passRate +
+                ", passRate='" + passRate + '\'' +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.mo.oj.controller;
 
+import com.mo.oj.pojo.Favorite;
 import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.Tag;
 import com.mo.oj.service.ProblemsService;
@@ -36,6 +37,16 @@ public class ProblemController {
     @PostMapping("/searchProblemById")
     public Problem searchProblemById(Integer id) {
         return this.problemsService.searchProblemById(id);
+    }
+
+    @PostMapping("/isFavorite")
+    public Boolean isFavorite(Integer userId, Integer problemId) {
+        return this.problemsService.isFavorite(userId, problemId);
+    }
+
+    @PostMapping("/updateFavorite")
+    public Boolean updateFavorite(Favorite favorite, boolean isFavorite) {
+        return this.problemsService.updateFavorite(favorite, isFavorite);
     }
 
 
