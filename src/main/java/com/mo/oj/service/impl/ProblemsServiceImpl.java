@@ -1,10 +1,7 @@
 package com.mo.oj.service.impl;
 
 import com.mo.oj.mapper.ProblemsMapper;
-import com.mo.oj.pojo.Favorite;
-import com.mo.oj.pojo.Problem;
-import com.mo.oj.pojo.Submit;
-import com.mo.oj.pojo.Tag;
+import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -84,6 +82,29 @@ public class ProblemsServiceImpl implements ProblemsService {
     }
 
     /**
+     * 查询当前题目的点赞或点踩信息
+     *
+     * @param goodRecord
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public HashMap<String, Object> isGood(GoodRecord goodRecord) {
+        //查询good_record表，看有没有点赞点踩的记录，
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("isGood", false);
+        map.put("isBad", false);
+        GoodRecord findGoodRecord = this.problemsMapper.isGood(goodRecord);
+        if (findGoodRecord == null)
+            return map;
+        if (findGoodRecord.getNumber() > 0)
+            map.replace("isGood", true);
+        else
+            map.replace("isBad", true);
+        return map;
+    }
+
+    /**
      * 收藏或者取消收藏
      *
      * @param favorite
@@ -103,5 +124,33 @@ public class ProblemsServiceImpl implements ProblemsService {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * 点赞或点踩，或者取消点赞点踩操作。
+     * 根据number值来辨别要做什么工作，
+     * 值为1：是点赞操作，需要添加一条点赞记录，
+     * 值为0：是取消点赞或点踩操作，直接删除数据库中的点赞或点踩信息就行
+     * 值为-1：是点踩操作，添加一条点踩记录
+     *
+     * @param goodRecord
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
+    @Override
+    public Boolean updateGoodAndBad(GoodRecord goodRecord) {
+        int flag = 0;
+        if (goodRecord.getNumber() == 1) {
+            flag = this.problemsMapper.insertGoodRecord(goodRecord);
+        } else if (goodRecord.getNumber() == 0) {
+            flag = this.problemsMapper.deleteGoodRecord(goodRecord);
+        } else if (goodRecord.getNumber() == -1) {
+            flag = this.problemsMapper.insertGoodRecord(goodRecord);
+        }
+        //修改problem中的good、bad数量
+        int flag2 = this.problemsMapper.updateProblemGoodAndBadNumber(goodRecord.getProblem_id());
+        if (flag > 0 && flag2 > 0)
+            return true;
+        return false;
     }
 }

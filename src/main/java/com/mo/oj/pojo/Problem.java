@@ -33,6 +33,16 @@ public class Problem {
     String difficultyName;
     String passRate;
 
+    Integer latest_submitFlag;//用于判断需要不需要修改 latest_submit字段信息，不为空就是会修改
+
+
+    public Integer getLatest_submitFlag() {
+        return latest_submitFlag;
+    }
+
+    public void setLatest_submitFlag(Integer latest_submitFlag) {
+        this.latest_submitFlag = latest_submitFlag;
+    }
 
     public String getPassRate() {
         return passRate;
@@ -307,6 +317,7 @@ public class Problem {
                 ", tagName=" + tagName +
                 ", difficultyName='" + difficultyName + '\'' +
                 ", passRate='" + passRate + '\'' +
+                ", latest_submitFlag=" + latest_submitFlag +
                 '}';
     }
 }

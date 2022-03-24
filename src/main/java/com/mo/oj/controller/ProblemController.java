@@ -1,6 +1,7 @@
 package com.mo.oj.controller;
 
 import com.mo.oj.pojo.Favorite;
+import com.mo.oj.pojo.GoodRecord;
 import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.Tag;
 import com.mo.oj.service.ProblemsService;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.crypto.interfaces.PBEKey;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -28,11 +31,9 @@ public class ProblemController {
 
     @PostMapping("/searchProblemListByConditions")
     public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start) {
-        System.out.println("searchProblemListByConditions=" + "\n" + difficulty + "\n" + status + "\n" + tag + "\n" + keyword + "\n" + user_id + "\n" + start);
         if (start == null) start = 0;
         return this.problemsService.searchProblemListByConditions(difficulty, status, tag, keyword, user_id, start);
     }
-
 
     @PostMapping("/searchProblemById")
     public Problem searchProblemById(Integer id) {
@@ -44,9 +45,26 @@ public class ProblemController {
         return this.problemsService.isFavorite(userId, problemId);
     }
 
+    @PostMapping("/isGood")
+    public HashMap<String, Object> isGood(GoodRecord goodRecord) {
+        //查询：题目是否点赞或点踩
+        return this.problemsService.isGood(goodRecord);
+    }
+
     @PostMapping("/updateFavorite")
     public Boolean updateFavorite(Favorite favorite, boolean isFavorite) {
         return this.problemsService.updateFavorite(favorite, isFavorite);
+    }
+
+    /**
+     * 修改点赞点踩的信息
+     *
+     * @param goodRecord
+     * @return
+     */
+    @PostMapping("/updateGoodAndBad")
+    public Boolean updateGoodAndBad(GoodRecord goodRecord) {
+        return this.problemsService.updateGoodAndBad(goodRecord);
     }
 
 

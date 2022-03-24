@@ -48,6 +48,80 @@
         order by p.id ASC limit #{start},30
     </select>
 
+    <update id="updateProblem" parameterType="com.mo.oj.pojo.Problem">
+        update problem set
+        <if test="title !=null and title !=''">
+            title = #{title},
+        </if>
+        <if test="difficulty !=null">
+            difficulty = #{difficulty},
+        </if>
+        <if test="question_type !=null">
+            question_type = #{question_type},
+        </if>
+        <if test="ispublic !=null">
+            ispublic = #{ispublic},
+        </if>
+        <if test="problem_stem !=null and problem_stem !=''">
+            problem_stem = #{problem_stem},
+        </if>
+        <if test="in_format !=null and in_format !=''">
+            in_format = #{in_format},
+        </if>
+        <if test="out_format !=null and out_format !=''">
+            out_format = #{out_format},
+        </if>
+        <if test="in_example !=null and in_example !=''">
+            in_example = #{in_example},
+        </if>
+        <if test="out_example !=null and out_example !=''">
+            out_example = #{out_example},
+        </if>
+        <if test="notice !=null and notice !=''">
+            notice = #{notice},
+        </if>
+        <if test="submit_times !=null">
+            submit_times = #{submit_times},
+        </if>
+        <if test="submit_pass_times !=null">
+            submit_pass_times = #{submit_pass_times},
+        </if>
+        <if test="submit_number !=null">
+            submit_number = #{submit_number},
+        </if>
+        <if test="submit_pass_number !=null">
+            submit_pass_number = #{submit_pass_number},
+        </if>
+        <if test="solution !=null and solution !=''">
+            solution = #{solution},
+        </if>
+        <if test="point !=null">
+            point = #{point},
+        </if>
+        <if test="good !=null">
+            good = #{good},
+        </if>
+        <if test="bad !=null">
+            bad = #{bad},
+        </if>
+        <if test="latest_submitFlag !=null">
+            latest_submit = now(),
+        </if>
+        <if test="modify_by !=null">
+            modify_by = #{modify_by},
+        </if>
+        modify_time=now()
+        where id=#{id}
+    </update>
+
+    <update id="updateProblemGoodAndBadNumber">
+        update problem
+        set good=(select count(1) from good_record where problem_id = #{problem_id} and number &gt; 0),
+            bad=(select count(1) from good_record where problem_id = #{problem_id} and number &lt; 0),
+            modify_time=now()
+        where id = #{problem_id}
+    </update>
+
     <!--
     <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from m_in_out_repository

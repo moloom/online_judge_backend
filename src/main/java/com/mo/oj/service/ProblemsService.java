@@ -1,9 +1,11 @@
 package com.mo.oj.service;
 
 import com.mo.oj.pojo.Favorite;
+import com.mo.oj.pojo.GoodRecord;
 import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.Tag;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface ProblemsService {
@@ -45,6 +47,14 @@ public interface ProblemsService {
     public Boolean isFavorite(Integer userId, Integer problemId);
 
     /**
+     * 查询当前题目的点赞或点踩信息
+     *
+     * @param goodRecord
+     * @return
+     */
+    public HashMap<String, Object> isGood(GoodRecord goodRecord);
+
+    /**
      * 收藏或者取消收藏
      *
      * @param favorite
@@ -52,5 +62,17 @@ public interface ProblemsService {
      * @return
      */
     public Boolean updateFavorite(Favorite favorite, boolean isFavorite);
+
+    /**
+     * 点赞或点踩，或者取消点赞点踩操作。
+     * 根据number值来辨别要做什么工作，
+     * 值为1：是点赞操作，需要添加一条点赞记录，
+     * 值为0：是取消点赞或点踩操作，直接删除数据库中的点赞或点踩信息就行
+     * 值为-1：是点踩操作，添加一条点踩记录
+     *
+     * @param goodRecord
+     * @return
+     */
+    public Boolean updateGoodAndBad(GoodRecord goodRecord);
 
 }

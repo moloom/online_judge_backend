@@ -1,15 +1,13 @@
 package com.mo.oj.mapper;
 
-import com.mo.oj.pojo.Favorite;
-import com.mo.oj.pojo.Problem;
-import com.mo.oj.pojo.Submit;
-import com.mo.oj.pojo.Tag;
+import com.mo.oj.pojo.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -51,6 +49,24 @@ public interface ProblemsMapper {
     public Problem searchProblemById(Integer id);
 
     /**
+     * 修改problem信息
+     *
+     * @param problem
+     * @return
+     */
+    public Integer updateProblem(Problem problem);
+
+    /**
+     * 修改good、bad的个数
+     *
+     * @param problem_id
+     * @return
+     */
+    public Integer updateProblemGoodAndBadNumber(Integer problem_id);
+
+    /*-----------------------------------------------------------------*/
+
+    /**
      * 查询favorite记录条数，条件userId，problemId
      *
      * @param userId
@@ -77,4 +93,36 @@ public interface ProblemsMapper {
      */
     @Insert("insert into favorite(problem_id,create_time,create_by) values(#{problem_id},now(),#{create_by})")
     public Integer addFavorite(Favorite favorite);
+
+    /*-----------------------------------------------------------------*/
+
+    /**
+     * 查询当前题目的点赞或点踩信息
+     *
+     * @param goodRecord
+     * @return
+     */
+    @Select("select * from good_record where user_id=#{user_id} and problem_id=#{problem_id}")
+    public GoodRecord isGood(GoodRecord goodRecord);
+
+    /**
+     * 添加一条点赞点踩信息
+     *
+     * @param goodRecord
+     * @return
+     */
+    @Insert("insert into good_record(problem_id,user_id,number,create_time) values(#{problem_id},#{user_id},#{number},now())")
+    public Integer insertGoodRecord(GoodRecord goodRecord);
+
+    /**
+     * 删除一条点赞点踩信息
+     *
+     * @param goodRecord
+     * @return
+     */
+    @Delete("delete from good_record where problem_id=#{problem_id} and user_id=#{user_id}")
+    public Integer deleteGoodRecord(GoodRecord goodRecord);
+
+
+    /*-----------------------------------------------------------------*/
 }
