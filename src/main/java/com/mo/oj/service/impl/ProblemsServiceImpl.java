@@ -139,17 +139,18 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
     public Boolean updateGoodAndBad(GoodRecord goodRecord) {
-        int flag = 0;
+        int flag = flag = this.problemsMapper.deleteGoodRecord(goodRecord);
+        int flag1 = 0;
         if (goodRecord.getNumber() == 1) {
-            flag = this.problemsMapper.insertGoodRecord(goodRecord);
-        } else if (goodRecord.getNumber() == 0) {
-            flag = this.problemsMapper.deleteGoodRecord(goodRecord);
+            flag1 = this.problemsMapper.insertGoodRecord(goodRecord);
         } else if (goodRecord.getNumber() == -1) {
-            flag = this.problemsMapper.insertGoodRecord(goodRecord);
+            flag1 = this.problemsMapper.insertGoodRecord(goodRecord);
         }
         //修改problem中的good、bad数量
         int flag2 = this.problemsMapper.updateProblemGoodAndBadNumber(goodRecord.getProblem_id());
-        if (flag > 0 && flag2 > 0)
+        if (goodRecord.getNumber() == 0 && flag > 0 && flag2 > 0)
+            return true;
+        else if (goodRecord.getNumber() != 0 && flag1 > 0 && flag2 > 0)
             return true;
         return false;
     }
