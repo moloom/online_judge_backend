@@ -14,13 +14,8 @@ import java.util.List;
 @Repository
 public interface ProblemsMapper {
 
-    /**
-     * 查询所有的tag
-     *
-     * @return
-     */
-    @Select("select * from tag")
-    public List<Tag> searchTagAll();
+
+    /*--------problem---------------------------------------------------------*/
 
     /**
      * 查询题目list，条件：difficulty、state、tag、title or id
@@ -28,7 +23,7 @@ public interface ProblemsMapper {
      * @param problem
      * @return
      */
-    public List<Problem> searchProblemListByConditions(Problem problem);
+//    public List<Problem> searchProblemListByConditions(Problem problem);
 
     /**
      * 查询用户当前已解答的题目list，条件：user_id，status
@@ -54,7 +49,7 @@ public interface ProblemsMapper {
      * @param problem
      * @return
      */
-    public Integer updateProblem(Problem problem);
+    public Integer updateProblem(Problem problem);//未完成
 
     /**
      * 修改good、bad的个数
@@ -64,7 +59,15 @@ public interface ProblemsMapper {
      */
     public Integer updateProblemGoodAndBadNumber(Integer problem_id);
 
-    /*-----------------------------------------------------------------*/
+    /**
+     * 查询所有的tag
+     *
+     * @return
+     */
+    @Select("select * from tag")
+    public List<Tag> searchTagAll();
+
+    /*---------favorite--------------------------------------------------------*/
 
     /**
      * 查询favorite记录条数，条件userId，problemId
@@ -94,7 +97,7 @@ public interface ProblemsMapper {
     @Insert("insert into favorite(problem_id,create_time,create_by) values(#{problem_id},now(),#{create_by})")
     public Integer addFavorite(Favorite favorite);
 
-    /*-----------------------------------------------------------------*/
+    /*-----------goodRecord------------------------------------------------------*/
 
     /**
      * 查询当前题目的点赞或点踩信息
@@ -124,5 +127,43 @@ public interface ProblemsMapper {
     public Integer deleteGoodRecord(GoodRecord goodRecord);
 
 
-    /*-----------------------------------------------------------------*/
+    /*---------submit--------------------------------------------------------*/
+
+
+    /**
+     * 查找一条submit记录，条件：status、user_id、problem_id
+     *
+     * @param submit
+     * @return
+     */
+    @Select("select * from submit where status=#{status} and user_id=#{user_id} and problem_id=#{problem_id}")
+    public Submit searchSubmitByStatusAndUserIdAndProblemId(Submit submit);
+
+    /**
+     * 新增提交记录
+     *
+     * @param submit
+     * @return
+     */
+    public Integer insertSubmit(Submit submit);
+
+    /**
+     * 修改提交记录
+     *
+     * @param submit
+     * @return
+     */
+    public Integer updateSubmit(Submit submit);
+
+    /*---------language--------------------------------------------------------*/
+
+
+//    /**
+//     * 查找一条language记录，条件：name
+//     *
+//     * @param name
+//     * @return
+//     */
+//    @Select("select * from language where name=#{name}")
+//    public Language searchLanguageByName(String name);
 }

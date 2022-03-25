@@ -47,8 +47,6 @@ public class ProblemsServiceImpl implements ProblemsService {
          * 未开始的，排除提交表中，做过的题目，*/
         //查询已解决的
         List<Problem> problemList = this.problemsMapper.searchProblemListByCondition(difficulty, status, tag, keyword, user_id, start);
-
-        System.out.println("submitList" + problemList);
         return problemList;
     }
 
@@ -153,5 +151,41 @@ public class ProblemsServiceImpl implements ProblemsService {
         else if (goodRecord.getNumber() != 0 && flag1 > 0 && flag2 > 0)
             return true;
         return false;
+    }
+
+    /**
+     * 保存代码
+     *
+     * @param submit
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
+    @Override
+    public Boolean saveCode(Submit submit) {
+        //如果提交记录中没有状态为0的记录，则新增一条状态为0的记录，如果有则修改就行
+        submit.setStatus(0);
+        int flag = 0;
+        Submit searchSubmit = this.problemsMapper.searchSubmitByStatusAndUserIdAndProblemId(submit);
+        submit.setId(searchSubmit.getId());
+        if (searchSubmit == null)
+            flag = this.problemsMapper.insertSubmit(submit);
+        else flag = this.problemsMapper.updateSubmit(submit);
+        if (flag > 0)
+            return true;
+        return false;
+    }
+
+    /**
+     * 初始化时获取用户上次保存的代码
+     *
+     * @param submit
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public Submit getCode(Submit submit) {
+        //查询状态为0，也就是用户保存的代码，如果用户保存的，就返回代码，如果没有保存，就返回空串
+        submit.setStatus(0);
+        return this.problemsMapper.searchSubmitByStatusAndUserIdAndProblemId(submit);
     }
 }

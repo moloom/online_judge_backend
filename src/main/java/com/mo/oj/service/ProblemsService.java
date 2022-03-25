@@ -1,9 +1,6 @@
 package com.mo.oj.service;
 
-import com.mo.oj.pojo.Favorite;
-import com.mo.oj.pojo.GoodRecord;
-import com.mo.oj.pojo.Problem;
-import com.mo.oj.pojo.Tag;
+import com.mo.oj.pojo.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -74,5 +71,21 @@ public interface ProblemsService {
      * @return
      */
     public Boolean updateGoodAndBad(GoodRecord goodRecord);
+
+    /**
+     * 保存代码
+     *
+     * @param submit
+     * @return
+     */
+    public Boolean saveCode(Submit submit);
+
+    /**
+     * 初始化时获取用户上次保存的代码
+     *
+     * @param submit
+     * @return
+     */
+    public Submit getCode(Submit submit);
 
 }

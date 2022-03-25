@@ -1,9 +1,6 @@
 package com.mo.oj.controller;
 
-import com.mo.oj.pojo.Favorite;
-import com.mo.oj.pojo.GoodRecord;
-import com.mo.oj.pojo.Problem;
-import com.mo.oj.pojo.Tag;
+import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,5 +64,25 @@ public class ProblemController {
         return this.problemsService.updateGoodAndBad(goodRecord);
     }
 
+    /**
+     * 保存代码
+     *
+     * @param submit
+     * @return
+     */
+    @PostMapping("/saveCode")
+    public Boolean saveCode(Submit submit) {
+        return this.problemsService.saveCode(submit);
+    }
 
+    /**
+     * 初始化时，获取用户上次保存的代码
+     *
+     * @param submit
+     * @return
+     */
+    @PostMapping("/getCode")
+    public Submit getCode(Submit submit) {
+        return this.problemsService.getCode(submit);
+    }
 }
