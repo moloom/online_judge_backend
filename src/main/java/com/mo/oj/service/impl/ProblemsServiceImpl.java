@@ -3,7 +3,9 @@ package com.mo.oj.service.impl;
 import com.mo.oj.mapper.ProblemsMapper;
 import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,11 @@ public class ProblemsServiceImpl implements ProblemsService {
     ProblemsMapper problemsMapper;
 
     /**
-     * 查询所有的标签
+     * 查询所有的标签, unless = "#result==null"
      *
      * @return
      */
+    @Cacheable(value = "tag", key = "'searchTagAll'")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public List<Tag> searchTagAll() {
@@ -56,6 +59,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param id
      * @return
      */
+    @Cacheable(value = "problem", key = "'searchProblemById'+#id")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public Problem searchProblemById(Integer id) {
@@ -69,6 +73,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param problemId
      * @return
      */
+    @Cacheable(value = "favorite", key = "'isFavorite-userId'+#userId+'-problemId-'+#problemId")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public Boolean isFavorite(Integer userId, Integer problemId) {
@@ -109,6 +114,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param isFavorite
      * @return
      */
+    @CachePut(value = "favorite", key = "'isFavorite-userId'+#favorite.create_by+'-problemId-'+#favorite.problem_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
     public Boolean updateFavorite(Favorite favorite, boolean isFavorite) {
@@ -130,10 +136,13 @@ public class ProblemsServiceImpl implements ProblemsService {
      * 值为1：是点赞操作，需要添加一条点赞记录，
      * 值为0：是取消点赞或点踩操作，直接删除数据库中的点赞或点踩信息就行
      * 值为-1：是点踩操作，添加一条点踩记录
+     * <p>
+     * 点赞或点踩会影响problem中的点赞和点踩数量，所以需要移除缓存的旧数据
      *
      * @param goodRecord
      * @return
      */
+    @CacheEvict(value = "problem", key = "'searchProblemById'+#goodRecord.problem_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
     public Boolean updateGoodAndBad(GoodRecord goodRecord) {
@@ -181,6 +190,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param submit
      * @return
      */
+    @Cacheable(value = "submit", key = "'getCode-userId'+#submit.user_id+'-problemId-'+#submit.problem_id")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public Submit getCode(Submit submit) {
@@ -188,4 +198,5 @@ public class ProblemsServiceImpl implements ProblemsService {
         submit.setStatus(0);
         return this.problemsMapper.searchSubmitByStatusAndUserIdAndProblemId(submit);
     }
+
 }
