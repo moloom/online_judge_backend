@@ -87,20 +87,20 @@ public class ProblemsServiceImpl implements ProblemsService {
     /**
      * 查询当前题目的点赞或点踩信息
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
     @Transactional(readOnly = true, timeout = 15)
     @Override
-    public HashMap<String, Object> isGood(GoodRecord goodRecord) {
+    public HashMap<String, Object> isGood(ProblemGoodRecord problemGoodRecord) {
         //查询good_record表，看有没有点赞点踩的记录，
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("isGood", false);
         map.put("isBad", false);
-        GoodRecord findGoodRecord = this.problemsMapper.isGood(goodRecord);
-        if (findGoodRecord == null)
+        ProblemGoodRecord findProblemGoodRecord = this.problemsMapper.isGood(problemGoodRecord);
+        if (findProblemGoodRecord == null)
             return map;
-        if (findGoodRecord.getNumber() > 0)
+        if (findProblemGoodRecord.getNumber() > 0)
             map.replace("isGood", true);
         else
             map.replace("isBad", true);
@@ -139,25 +139,25 @@ public class ProblemsServiceImpl implements ProblemsService {
      * <p>
      * 点赞或点踩会影响problem中的点赞和点踩数量，所以需要移除缓存的旧数据
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
-    @CacheEvict(value = "problem", key = "'searchProblemById'+#goodRecord.problem_id")
+    @CacheEvict(value = "problem", key = "'searchProblemById'+#problemGoodRecord.problem_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
-    public Boolean updateGoodAndBad(GoodRecord goodRecord) {
-        int flag = flag = this.problemsMapper.deleteGoodRecord(goodRecord);
+    public Boolean updateGoodAndBad(ProblemGoodRecord problemGoodRecord) {
+        int flag = flag = this.problemsMapper.deleteGoodRecord(problemGoodRecord);
         int flag1 = 0;
-        if (goodRecord.getNumber() == 1) {
-            flag1 = this.problemsMapper.insertGoodRecord(goodRecord);
-        } else if (goodRecord.getNumber() == -1) {
-            flag1 = this.problemsMapper.insertGoodRecord(goodRecord);
+        if (problemGoodRecord.getNumber() == 1) {
+            flag1 = this.problemsMapper.insertGoodRecord(problemGoodRecord);
+        } else if (problemGoodRecord.getNumber() == -1) {
+            flag1 = this.problemsMapper.insertGoodRecord(problemGoodRecord);
         }
         //修改problem中的good、bad数量
-        int flag2 = this.problemsMapper.updateProblemGoodAndBadNumber(goodRecord.getProblem_id());
-        if (goodRecord.getNumber() == 0 && flag > 0 && flag2 > 0)
+        int flag2 = this.problemsMapper.updateProblemGoodAndBadNumber(problemGoodRecord.getProblem_id());
+        if (problemGoodRecord.getNumber() == 0 && flag > 0 && flag2 > 0)
             return true;
-        else if (goodRecord.getNumber() != 0 && flag1 > 0 && flag2 > 0)
+        else if (problemGoodRecord.getNumber() != 0 && flag1 > 0 && flag2 > 0)
             return true;
         return false;
     }

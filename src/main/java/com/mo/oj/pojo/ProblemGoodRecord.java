@@ -2,7 +2,7 @@ package com.mo.oj.pojo;
 
 import java.sql.Timestamp;
 
-public class GoodRecord {
+public class ProblemGoodRecord {
 
     Integer id;
     Integer problem_id;
@@ -53,7 +53,7 @@ public class GoodRecord {
 
     @Override
     public String toString() {
-        return "GoodRecord{" +
+        return "ProblemGoodRecord{" +
                 "id=" + id +
                 ", problem_id=" + problem_id +
                 ", number=" + number +

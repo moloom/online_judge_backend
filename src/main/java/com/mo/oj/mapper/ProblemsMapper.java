@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -102,29 +101,29 @@ public interface ProblemsMapper {
     /**
      * 查询当前题目的点赞或点踩信息
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
     @Select("select * from good_record where user_id=#{user_id} and problem_id=#{problem_id}")
-    public GoodRecord isGood(GoodRecord goodRecord);
+    public ProblemGoodRecord isGood(ProblemGoodRecord problemGoodRecord);
 
     /**
      * 添加一条点赞点踩信息
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
     @Insert("insert into good_record(problem_id,user_id,number,create_time) values(#{problem_id},#{user_id},#{number},now())")
-    public Integer insertGoodRecord(GoodRecord goodRecord);
+    public Integer insertGoodRecord(ProblemGoodRecord problemGoodRecord);
 
     /**
      * 删除一条点赞点踩信息
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
     @Delete("delete from good_record where problem_id=#{problem_id} and user_id=#{user_id}")
-    public Integer deleteGoodRecord(GoodRecord goodRecord);
+    public Integer deleteGoodRecord(ProblemGoodRecord problemGoodRecord);
 
 
     /*---------submit--------------------------------------------------------*/

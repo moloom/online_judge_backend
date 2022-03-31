@@ -2,14 +2,11 @@ package com.mo.oj.controller;
 
 import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.crypto.interfaces.PBEKey;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,9 +40,9 @@ public class ProblemController {
     }
 
     @PostMapping("/isGood")
-    public HashMap<String, Object> isGood(GoodRecord goodRecord) {
+    public HashMap<String, Object> isGood(ProblemGoodRecord problemGoodRecord) {
         //查询：题目是否点赞或点踩
-        return this.problemsService.isGood(goodRecord);
+        return this.problemsService.isGood(problemGoodRecord);
     }
 
     @PostMapping("/updateFavorite")
@@ -56,12 +53,12 @@ public class ProblemController {
     /**
      * 修改点赞点踩的信息
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
-    @PostMapping("/updateGoodAndBad")
-    public Boolean updateGoodAndBad(GoodRecord goodRecord) {
-        return this.problemsService.updateGoodAndBad(goodRecord);
+    @PostMapping("/changeGoodAndBad")
+    public Boolean changeGoodAndBad(ProblemGoodRecord problemGoodRecord) {
+        return this.problemsService.updateGoodAndBad(problemGoodRecord);
     }
 
     /**

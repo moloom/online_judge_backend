@@ -5,13 +5,26 @@ import java.sql.Timestamp;
 public class Comment {
     Integer id;
     Integer user_id;
+    Integer problem_id;
     String text;
     Integer level;
-    Integer comment_id;
+    Integer first_comment_id;
+    Integer second_comment_id;
     Integer good;
     Integer bad;
-    Integer create_by;
     Timestamp create_time;
+
+    String userName;//当前这条评论的发表者昵称
+    String userNameOfComment;//所回复评论的发表者name
+
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public Integer getId() {
         return id;
@@ -27,6 +40,14 @@ public class Comment {
 
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public Integer getProblem_id() {
+        return problem_id;
+    }
+
+    public void setProblem_id(Integer problem_id) {
+        this.problem_id = problem_id;
     }
 
     public String getText() {
@@ -45,12 +66,20 @@ public class Comment {
         this.level = level;
     }
 
-    public Integer getComment_id() {
-        return comment_id;
+    public Integer getFirst_comment_id() {
+        return first_comment_id;
     }
 
-    public void setComment_id(Integer comment_id) {
-        this.comment_id = comment_id;
+    public void setFirst_comment_id(Integer first_comment_id) {
+        this.first_comment_id = first_comment_id;
+    }
+
+    public Integer getSecond_comment_id() {
+        return second_comment_id;
+    }
+
+    public void setSecond_comment_id(Integer second_comment_id) {
+        this.second_comment_id = second_comment_id;
     }
 
     public Integer getGood() {
@@ -69,14 +98,6 @@ public class Comment {
         this.bad = bad;
     }
 
-    public Integer getCreate_by() {
-        return create_by;
-    }
-
-    public void setCreate_by(Integer create_by) {
-        this.create_by = create_by;
-    }
-
     public Timestamp getCreate_time() {
         return create_time;
     }
@@ -85,18 +106,29 @@ public class Comment {
         this.create_time = create_time;
     }
 
+    public String getUserNameOfComment() {
+        return userNameOfComment;
+    }
+
+    public void setUserNameOfComment(String userNameOfComment) {
+        this.userNameOfComment = userNameOfComment;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
                 ", user_id=" + user_id +
+                ", problem_id=" + problem_id +
                 ", text='" + text + '\'' +
                 ", level=" + level +
-                ", comment_id=" + comment_id +
+                ", first_comment_id=" + first_comment_id +
+                ", second_comment_id=" + second_comment_id +
                 ", good=" + good +
                 ", bad=" + bad +
-                ", create_by=" + create_by +
                 ", create_time=" + create_time +
+                ", userName='" + userName + '\'' +
+                ", userNameOfComment='" + userNameOfComment + '\'' +
                 '}';
     }
 }

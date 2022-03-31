@@ -46,10 +46,10 @@ public interface ProblemsService {
     /**
      * 查询当前题目的点赞或点踩信息
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
-    public HashMap<String, Object> isGood(GoodRecord goodRecord);
+    public HashMap<String, Object> isGood(ProblemGoodRecord problemGoodRecord);
 
     /**
      * 收藏或者取消收藏
@@ -67,10 +67,10 @@ public interface ProblemsService {
      * 值为0：是取消点赞或点踩操作，直接删除数据库中的点赞或点踩信息就行
      * 值为-1：是点踩操作，添加一条点踩记录
      *
-     * @param goodRecord
+     * @param problemGoodRecord
      * @return
      */
-    public Boolean updateGoodAndBad(GoodRecord goodRecord);
+    public Boolean updateGoodAndBad(ProblemGoodRecord problemGoodRecord);
 
     /**
      * 保存代码
