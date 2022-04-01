@@ -96,7 +96,7 @@ public interface ProblemsMapper {
     @Insert("insert into favorite(problem_id,create_time,create_by) values(#{problem_id},now(),#{create_by})")
     public Integer addFavorite(Favorite favorite);
 
-    /*-----------goodRecord------------------------------------------------------*/
+    /*-----------problemGoodRecord------------------------------------------------------*/
 
     /**
      * 查询当前题目的点赞或点踩信息
@@ -104,7 +104,7 @@ public interface ProblemsMapper {
      * @param problemGoodRecord
      * @return
      */
-    @Select("select * from good_record where user_id=#{user_id} and problem_id=#{problem_id}")
+    @Select("select * from problem_good_record where user_id=#{user_id} and problem_id=#{problem_id}")
     public ProblemGoodRecord isGood(ProblemGoodRecord problemGoodRecord);
 
     /**
@@ -113,8 +113,8 @@ public interface ProblemsMapper {
      * @param problemGoodRecord
      * @return
      */
-    @Insert("insert into good_record(problem_id,user_id,number,create_time) values(#{problem_id},#{user_id},#{number},now())")
-    public Integer insertGoodRecord(ProblemGoodRecord problemGoodRecord);
+    @Insert("insert into problem_good_record(problem_id,user_id,number,create_time) values(#{problem_id},#{user_id},#{number},now())")
+    public Integer insertProblemGoodRecord(ProblemGoodRecord problemGoodRecord);
 
     /**
      * 删除一条点赞点踩信息
@@ -122,8 +122,8 @@ public interface ProblemsMapper {
      * @param problemGoodRecord
      * @return
      */
-    @Delete("delete from good_record where problem_id=#{problem_id} and user_id=#{user_id}")
-    public Integer deleteGoodRecord(ProblemGoodRecord problemGoodRecord);
+    @Delete("delete from problem_good_record where problem_id=#{problem_id} and user_id=#{user_id}")
+    public Integer deleteProblemGoodRecord(ProblemGoodRecord problemGoodRecord);
 
 
     /*---------submit--------------------------------------------------------*/

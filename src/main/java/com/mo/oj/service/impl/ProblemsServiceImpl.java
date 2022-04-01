@@ -93,7 +93,7 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public HashMap<String, Object> isGood(ProblemGoodRecord problemGoodRecord) {
-        //查询good_record表，看有没有点赞点踩的记录，
+        //查询problem_good_record表，看有没有点赞点踩的记录，
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("isGood", false);
         map.put("isBad", false);
@@ -114,7 +114,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param isFavorite
      * @return
      */
-    @CachePut(value = "favorite", key = "'isFavorite-userId'+#favorite.create_by+'-problemId-'+#favorite.problem_id")
+    @CacheEvict(value = "favorite", key = "'isFavorite-userId'+#favorite.create_by+'-problemId-'+#favorite.problem_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
     public Boolean updateFavorite(Favorite favorite, boolean isFavorite) {
@@ -146,17 +146,18 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 20)
     @Override
     public Boolean updateGoodAndBad(ProblemGoodRecord problemGoodRecord) {
-        int flag = flag = this.problemsMapper.deleteGoodRecord(problemGoodRecord);
+        int flag = flag = this.problemsMapper.deleteProblemGoodRecord(problemGoodRecord);
         int flag1 = 0;
-        if (problemGoodRecord.getNumber() == 1) {
-            flag1 = this.problemsMapper.insertGoodRecord(problemGoodRecord);
-        } else if (problemGoodRecord.getNumber() == -1) {
-            flag1 = this.problemsMapper.insertGoodRecord(problemGoodRecord);
-        }
+        //点赞或点踩时插入一条记录到里面去
+        if (problemGoodRecord.getNumber() == 1 || problemGoodRecord.getNumber() == -1)
+            flag1 = this.problemsMapper.insertProblemGoodRecord(problemGoodRecord);
         //修改problem中的good、bad数量
         int flag2 = this.problemsMapper.updateProblemGoodAndBadNumber(problemGoodRecord.getProblem_id());
-        if (problemGoodRecord.getNumber() == 0 && flag > 0 && flag2 > 0)
+        //如果取消点赞点踩操作的 删除记录和修改点赞点踩数量成功，则返回true，
+        if (problemGoodRecord.getNumber() == 0 && flag > 0 && flag2 > 0) {
             return true;
+        }
+        //如果点赞点踩操作的 插入记录和修改点赞点踩数量成功，则返回true，
         else if (problemGoodRecord.getNumber() != 0 && flag1 > 0 && flag2 > 0)
             return true;
         return false;
@@ -168,6 +169,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param submit
      * @return
      */
+    @CacheEvict(value = "submit", key = "'getCode-userId'+#submit.user_id+'-problemId-'+#submit.problem_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
     @Override
     public Boolean saveCode(Submit submit) {

@@ -1,6 +1,7 @@
 package com.mo.oj.pojo;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Comment {
     Integer id;
@@ -16,7 +17,25 @@ public class Comment {
 
     String userName;//当前这条评论的发表者昵称
     String userNameOfComment;//所回复评论的发表者name
+    List<Comment> commentChildList; //一级评论下的回复评论
+    String userPicture;
 
+
+    public String getUserPicture() {
+        return userPicture;
+    }
+
+    public void setUserPicture(String userPicture) {
+        this.userPicture = userPicture;
+    }
+
+    public List<Comment> getCommentChildList() {
+        return commentChildList;
+    }
+
+    public void setCommentChildList(List<Comment> commentChildList) {
+        this.commentChildList = commentChildList;
+    }
 
     public String getUserName() {
         return userName;
@@ -129,6 +148,8 @@ public class Comment {
                 ", create_time=" + create_time +
                 ", userName='" + userName + '\'' +
                 ", userNameOfComment='" + userNameOfComment + '\'' +
+                ", commentChildList=" + commentChildList +
+                ", userPicture='" + userPicture + '\'' +
                 '}';
     }
 }

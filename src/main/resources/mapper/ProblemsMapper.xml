@@ -116,8 +116,8 @@
 
     <update id="updateProblemGoodAndBadNumber">
         update problem
-        set good=(select count(1) from good_record where problem_id = #{problem_id} and number &gt; 0),
-            bad=(select count(1) from good_record where problem_id = #{problem_id} and number &lt; 0),
+        set good=(select count(1) from problem_good_record where problem_id = #{problem_id} and number &gt; 0),
+            bad=(select count(1) from problem_good_record where problem_id = #{problem_id} and number &lt; 0),
             modify_time=now()
         where id = #{problem_id}
     </update>

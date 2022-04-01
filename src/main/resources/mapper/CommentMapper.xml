@@ -5,14 +5,14 @@
 
     <insert id="insertComment" parameterType="com.mo.oj.pojo.Comment">
         insert into comment(user_id,
-                         problem_id,
-                         text,
-                         level,
-                         first_comment_id,
-                         second_comment_id,
-                         good,
-                         bad,
-                         create_time)
+                            problem_id,
+                            text,
+                            level,
+                            first_comment_id,
+                            second_comment_id,
+                            good,
+                            bad,
+                            create_time)
         values (#{user_id},
                 #{problem_id},
                 #{text},
@@ -24,5 +24,40 @@
                 now())
     </insert>
 
+    <select id="searchCommentListByComment" parameterType="com.mo.oj.pojo.Comment" resultType="com.mo.oj.pojo.Comment">
+        select c.*, u.name as userName,u.picture as userPicture
+        <if test="level == null">
+            ,
+            ( CASE
+            /*二级评论查询所回复的用户的昵称*/
+            WHEN c.level =2
+            THEN (select u2.name from comment c2 ,user u2 where c2.id=c.first_comment_id and c2.user_id=u2.id)
+            /*三级评论查询所回复的用户的昵称*/
+            WHEN c.level =3
+            THEN (select u2.name from comment c2 ,user u2 where c2.id=c.second_comment_id and c2.user_id=u2.id)
+            END
+            ) as userNameOfComment
+        </if>
+        from comment c,user u
+        where c.problem_id = #{problem_id}
+        /* 查询一级评论*/
+        <if test="level !=null and level == 1">
+            and c.level=#{level}
+        </if>
+        /*查询一级评论下的子评论 */
+        <if test="level == null">
+            /*防止查出别的一级评论下的子评论*/
+            and c.first_comment_id = #{first_comment_id}
+            and c.level != 1
+        </if>
+        and c.user_id =u.id
+        order by c.create_time ASC
+    </select>
 
+    <update id="updateCommentNumber">
+        update comment
+        set good=(select count(1) from comment_good_record where comment_id = #{comment_id} and number &gt; 0),
+            bad=(select count(1) from comment_good_record where comment_id = #{comment_id} and number &lt; 0)
+        where id = #{comment_id}
+    </update>
 </mapper>
