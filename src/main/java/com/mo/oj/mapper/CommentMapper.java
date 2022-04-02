@@ -35,15 +35,23 @@ public interface CommentMapper {
     @Select("select * from comment_good_record where user_id=#{user_id} and comment_id=#{comment_id}")
     public CommentGoodRecord searchCommentGoodRecord(Integer user_id, Integer comment_id);
 
-
     /**
-     * 删除一条点赞点踩信息
+     * 删除一条点赞点踩信息   条件comment_id、user_id
      *
      * @param commentGoodRecord
      * @return
      */
     @Delete("delete from comment_good_record where comment_id=#{comment_id} and user_id=#{user_id}")
     public Integer deleteCommentGoodRecord(CommentGoodRecord commentGoodRecord);
+
+    /**
+     * 删除多条点赞点踩信息   条件comment_id
+     *
+     * @param comment_id
+     * @return
+     */
+    @Delete("delete from comment_good_record where comment_id=#{comment_id}")
+    public Integer deleteManyCommentGoodRecord(Integer comment_id);
 
     /**
      * 插入一条评论
@@ -87,4 +95,21 @@ public interface CommentMapper {
      */
     @Select("select count(1) from comment where problem_id=#{problem_id}")
     public Integer searchCommentCountByProblemId(Integer problem_id);
+
+    /**
+     * 查询最近的评论list，
+     *
+     * @param user_id
+     * @param start
+     * @return
+     */
+    public List<Comment> searchCommentListRecently(Integer user_id, Integer start);
+
+    /**
+     * 查询评论的数量
+     *
+     * @param user_id
+     * @return
+     */
+    public Integer searchCommentCountRecently(Integer user_id);
 }

@@ -64,22 +64,22 @@ public class ProblemController {
     /**
      * 保存代码
      *
-     * @param submit
+     * @param submission
      * @return
      */
     @PostMapping("/saveCode")
-    public Boolean saveCode(Submit submit) {
-        return this.problemsService.saveCode(submit);
+    public Boolean saveCode(Submission submission) {
+        return this.problemsService.saveCode(submission);
     }
 
     /**
      * 初始化时，获取用户上次保存的代码
      *
-     * @param submit
+     * @param submission
      * @return
      */
     @PostMapping("/getCode")
-    public Submit getCode(Submit submit) {
-        return this.problemsService.getCode(submit);
+    public Submission getCode(Submission submission) {
+        return this.problemsService.getCode(submission);
     }
 }

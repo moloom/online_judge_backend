@@ -2,7 +2,7 @@ package com.mo.oj.pojo;
 
 import java.sql.Timestamp;
 
-public class Submit {
+public class Submission {
     Integer id;
     Integer problem_id;
     Integer exec_time;
@@ -15,6 +15,55 @@ public class Submit {
     String error_info;
     Timestamp create_time;
     Integer user_id;
+
+    String problemTitle;
+    String userName;
+    String statusName;
+    String languageName;
+
+    //分页用
+    Integer start;
+
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public String getProblemTitle() {
+        return problemTitle;
+    }
+
+    public void setProblemTitle(String problemTitle) {
+        this.problemTitle = problemTitle;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
 
     public Integer getId() {
         return id;
@@ -114,7 +163,7 @@ public class Submit {
 
     @Override
     public String toString() {
-        return "Submit{" +
+        return "Submission{" +
                 "id=" + id +
                 ", problem_id=" + problem_id +
                 ", exec_time=" + exec_time +
@@ -127,6 +176,11 @@ public class Submit {
                 ", error_info='" + error_info + '\'' +
                 ", create_time=" + create_time +
                 ", user_id=" + user_id +
+                ", problemTitle='" + problemTitle + '\'' +
+                ", userName='" + userName + '\'' +
+                ", statusName='" + statusName + '\'' +
+                ", languageName='" + languageName + '\'' +
+                ", start=" + start +
                 '}';
     }
 }

@@ -179,7 +179,6 @@ public class Problem {
                 m1 = (float) Math.round(m1 * 10000) / 100;
                 passRate = String.valueOf(m1) + "%";
             } else passRate = "0%";
-            System.out.println("passRate" + passRate);
         }
     }
 
@@ -195,7 +194,6 @@ public class Problem {
                 m1 = (float) Math.round(m1 * 10000) / 100;
                 passRate = String.valueOf(m1) + "%";
             } else passRate = "0%";
-            System.out.println("passRate" + passRate);
         }
     }
 

@@ -19,7 +19,16 @@ public class Comment {
     String userNameOfComment;//所回复评论的发表者name
     List<Comment> commentChildList; //一级评论下的回复评论
     String userPicture;
+    String problemTitle;
 
+
+    public String getProblemTitle() {
+        return problemTitle;
+    }
+
+    public void setProblemTitle(String problemTitle) {
+        this.problemTitle = problemTitle;
+    }
 
     public String getUserPicture() {
         return userPicture;
@@ -150,6 +159,7 @@ public class Comment {
                 ", userNameOfComment='" + userNameOfComment + '\'' +
                 ", commentChildList=" + commentChildList +
                 ", userPicture='" + userPicture + '\'' +
+                ", problemTitle='" + problemTitle + '\'' +
                 '}';
     }
 }

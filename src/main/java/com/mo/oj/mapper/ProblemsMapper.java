@@ -126,34 +126,6 @@ public interface ProblemsMapper {
     public Integer deleteProblemGoodRecord(ProblemGoodRecord problemGoodRecord);
 
 
-    /*---------submit--------------------------------------------------------*/
-
-
-    /**
-     * 查找一条submit记录，条件：status、user_id、problem_id
-     *
-     * @param submit
-     * @return
-     */
-    @Select("select * from submit where status=#{status} and user_id=#{user_id} and problem_id=#{problem_id}")
-    public Submit searchSubmitByStatusAndUserIdAndProblemId(Submit submit);
-
-    /**
-     * 新增提交记录
-     *
-     * @param submit
-     * @return
-     */
-    public Integer insertSubmit(Submit submit);
-
-    /**
-     * 修改提交记录
-     *
-     * @param submit
-     * @return
-     */
-    public Integer updateSubmit(Submit submit);
-
     /*---------language--------------------------------------------------------*/
 
 

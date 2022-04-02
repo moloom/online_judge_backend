@@ -1,10 +1,10 @@
 package com.mo.oj.service.impl;
 
 import com.mo.oj.mapper.ProblemsMapper;
+import com.mo.oj.mapper.SubmissionMapper;
 import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,12 +20,15 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Resource
     ProblemsMapper problemsMapper;
 
+    @Resource
+    SubmissionMapper submissionMapper;
+
     /**
      * 查询所有的标签, unless = "#result==null"
      *
      * @return
      */
-    @Cacheable(value = "tag", key = "'searchTagAll'")
+    @Cacheable(value = "tag", key = "'searchTagAll'", unless = "#result == null")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public List<Tag> searchTagAll() {
@@ -59,7 +62,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param id
      * @return
      */
-    @Cacheable(value = "problem", key = "'searchProblemById'+#id")
+    @Cacheable(value = "problem", key = "'searchProblemById'+#id", unless = "#result == null")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public Problem searchProblemById(Integer id) {
@@ -73,7 +76,7 @@ public class ProblemsServiceImpl implements ProblemsService {
      * @param problemId
      * @return
      */
-    @Cacheable(value = "favorite", key = "'isFavorite-userId'+#userId+'-problemId-'+#problemId")
+    @Cacheable(value = "favorite", key = "'isFavorite-userId'+#userId+'-problemId-'+#problemId", unless = "#result == null")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public Boolean isFavorite(Integer userId, Integer problemId) {
@@ -164,23 +167,25 @@ public class ProblemsServiceImpl implements ProblemsService {
     }
 
     /**
-     * 保存代码
+     * 临时保存代码
      *
-     * @param submit
+     * @param submission
      * @return
      */
-    @CacheEvict(value = "submit", key = "'getCode-userId'+#submit.user_id+'-problemId-'+#submit.problem_id")
+    @CacheEvict(value = "submission", key = "'getCode-userId'+#submission.user_id+'-problemId-'+#submission.problem_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
     @Override
-    public Boolean saveCode(Submit submit) {
+    public Boolean saveCode(Submission submission) {
         //如果提交记录中没有状态为0的记录，则新增一条状态为0的记录，如果有则修改就行
-        submit.setStatus(0);
+        submission.setStatus(0);
         int flag = 0;
-        Submit searchSubmit = this.problemsMapper.searchSubmitByStatusAndUserIdAndProblemId(submit);
-        submit.setId(searchSubmit.getId());
-        if (searchSubmit == null)
-            flag = this.problemsMapper.insertSubmit(submit);
-        else flag = this.problemsMapper.updateSubmit(submit);
+        Submission searchSubmission = this.submissionMapper.searchSubmissionByStatusAndUserIdAndProblemId(submission);
+        if (searchSubmission == null) {
+            flag = this.submissionMapper.insertSubmission(submission);
+        } else {
+            submission.setId(searchSubmission.getId());
+            flag = this.submissionMapper.updateSubmission(submission);
+        }
         if (flag > 0)
             return true;
         return false;
@@ -189,16 +194,16 @@ public class ProblemsServiceImpl implements ProblemsService {
     /**
      * 初始化时获取用户上次保存的代码
      *
-     * @param submit
+     * @param submission
      * @return
      */
-    @Cacheable(value = "submit", key = "'getCode-userId'+#submit.user_id+'-problemId-'+#submit.problem_id")
+    @Cacheable(value = "submission", key = "'getCode-userId'+#submission.user_id+'-problemId-'+#submission.problem_id", unless = "#result == null")
     @Transactional(readOnly = true, timeout = 15)
     @Override
-    public Submit getCode(Submit submit) {
+    public Submission getCode(Submission submission) {
         //查询状态为0，也就是用户保存的代码，如果用户保存的，就返回代码，如果没有保存，就返回空串
-        submit.setStatus(0);
-        return this.problemsMapper.searchSubmitByStatusAndUserIdAndProblemId(submit);
+        submission.setStatus(0);
+        return this.submissionMapper.searchSubmissionByStatusAndUserIdAndProblemId(submission);
     }
 
 }

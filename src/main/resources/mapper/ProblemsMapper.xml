@@ -16,7 +16,7 @@
             </if>
             in
             (select problem_id
-            from submit
+            from submission
             where 1=1
             <if test="status!=null and status ==2">
                 and status = 1 /* 状态：已解决；有提交记录，要查询当前用户已通过的题目*/
@@ -24,7 +24,7 @@
             <if test="status!=null and status ==3">
                 /* 状态：尝试过；有提交记录的，且用户当前提交了代码但是未做对的题目。我的想法是：先排除掉用户以解决的题目*/
                 and status != 1
-                and problem_id not in (select problem_id from submit where status =1 and user_id=#{user_id})
+                and problem_id not in (select problem_id from submission where status =1 and user_id=#{user_id})
             </if>
             /*处理边界值条件，*/
             <if test="user_id!=null and status!=null and status &lt;=3 and status &gt;=1">
@@ -122,65 +122,6 @@
         where id = #{problem_id}
     </update>
 
-    <insert id="insertSubmit" parameterType="com.mo.oj.pojo.Submit">
-        insert into submit(problem_id,
-                           exec_time,
-                           consume_memory,
-                           pass_use_cases,
-                           use_cases,
-                           status,
-                           code,
-                           language,
-                           error_info,
-                           user_id,
-                           create_time)
-        values (#{problem_id},
-                #{exec_time},
-                #{consume_memory},
-                #{pass_use_cases},
-                #{use_cases},
-                #{status},
-                #{code},
-                #{language},
-                #{error_info},
-                #{user_id},
-                now())
-    </insert>
-
-    <update id="updateSubmit" parameterType="com.mo.oj.pojo.Submit">
-        update submit set
-        <if test="problem_id !=null">
-            problem_id = #{problem_id},
-        </if>
-        <if test="exec_time !=null">
-            exec_time = #{exec_time},
-        </if>
-        <if test="consume_memory !=null">
-            consume_memory = #{consume_memory},
-        </if>
-        <if test="pass_use_cases !=null">
-            pass_use_cases = #{pass_use_cases},
-        </if>
-        <if test="use_cases !=null">
-            use_cases = #{use_cases},
-        </if>
-        <if test="status !=null">
-            status = #{status},
-        </if>
-        <if test="code !=null and code !=''">
-            code = #{code},
-        </if>
-        <if test="language !=null">
-            language = #{language},
-        </if>
-        <if test="error_info !=null and error_info !=''">
-            error_info = #{error_info},
-        </if>
-        <if test="user_id !=null">
-            user_id = #{user_id}
-        </if>
-        where id=#{id}
-    </update>
     <!--
     <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from m_in_out_repository

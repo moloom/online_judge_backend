@@ -73,19 +73,19 @@ public interface ProblemsService {
     public Boolean updateGoodAndBad(ProblemGoodRecord problemGoodRecord);
 
     /**
-     * 保存代码
+     * 临时保存代码
      *
-     * @param submit
+     * @param submission
      * @return
      */
-    public Boolean saveCode(Submit submit);
+    public Boolean saveCode(Submission submission);
 
     /**
      * 初始化时获取用户上次保存的代码
      *
-     * @param submit
+     * @param submission
      * @return
      */
-    public Submit getCode(Submit submit);
+    public Submission getCode(Submission submission);
 
 }

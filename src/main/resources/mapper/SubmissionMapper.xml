@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mo.oj.mapper.SubmissionMapper">
+
+    <select id="searchSubmissionListByMap" resultType="com.mo.oj.pojo.Submission">
+        select s.*,u.name as userName ,p.title as problemTitle ,ss.name as statusName,l.name as languageName
+        from submission s,user u,problem p,submission_status ss ,language l
+        where 1=1
+        <if test="problem_id!=null">
+            and s.problem_id=#{problem_id}
+        </if>
+        <if test="status!=null">
+            and s.status=#{status}
+            and s.satus!=0
+        </if>
+        <if test="language!=null">
+            and s.language=#{language}
+        </if>
+        <if test="user_id!=null">
+            and s.user_id=#{user_id}
+        </if>
+
+        and u.id=s.user_id
+        and p.id=s.problem_id
+        and ss.id=s.status
+        and l.id=s.language
+        order by s.id DESC limit #{start},20
+    </select>
+
+    <select id="searchOneSubmissionById" resultType="com.mo.oj.pojo.Submission">
+        select s.*,
+               u.name  as userName,
+               p.title as problemTitle,
+               ss.name as statusName,
+               l.name  as languageName
+        from submission s,
+             user u,
+             problem p,
+             submission_status ss,
+             language l
+        where s.id = #{id}
+          and u.id = s.user_id
+          and p.id = s.problem_id
+          and ss.id = s.status
+          and l.id = s.language
+    </select>
+
+    <select id="searchSubmissionCountBySubmission" resultType="java.lang.Integer">
+        select count(1)
+        from submission s
+        where 1=1
+        <if test="problem_id!=null">
+            and s.problem_id=#{problem_id}
+        </if>
+        <if test="status!=null">
+            and s.status=#{status}
+            and s.satus!=0
+        </if>
+        <if test="language!=null">
+            and s.language=#{language}
+        </if>
+        <if test="user_id!=null">
+            and s.user_id=#{user_id}
+        </if>
+    </select>
+
+    <insert id="insertSubmission" parameterType="com.mo.oj.pojo.Submission">
+        insert into submission(problem_id,
+                               exec_time,
+                               consume_memory,
+                               pass_use_cases,
+                               use_cases,
+                               status,
+                               code,
+                               language,
+                               error_info,
+                               user_id,
+                               create_time)
+        values (#{problem_id},
+                #{exec_time},
+                #{consume_memory},
+                #{pass_use_cases},
+                #{use_cases},
+                #{status},
+                #{code},
+                #{language},
+                #{error_info},
+                #{user_id},
+                now())
+    </insert>
+
+    <update id="updateSubmit" parameterType="com.mo.oj.pojo.Submission">
+        update submission set
+        <if test="problem_id !=null">
+            problem_id = #{problem_id},
+        </if>
+        <if test="exec_time !=null">
+            exec_time = #{exec_time},
+        </if>
+        <if test="consume_memory !=null">
+            consume_memory = #{consume_memory},
+        </if>
+        <if test="pass_use_cases !=null">
+            pass_use_cases = #{pass_use_cases},
+        </if>
+        <if test="use_cases !=null">
+            use_cases = #{use_cases},
+        </if>
+        <if test="status !=null">
+            status = #{status},
+        </if>
+        <if test="code !=null and code !=''">
+            code = #{code},
+        </if>
+        <if test="language !=null">
+            language = #{language},
+        </if>
+        <if test="error_info !=null and error_info !=''">
+            error_info = #{error_info},
+        </if>
+        <if test="user_id !=null">
+            user_id = #{user_id}
+        </if>
+        where id=#{id}
+    </update>
+    <!--
+    <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from m_in_out_repository
+        where 1=1
+        <if test="bid !=null and bid !=''">
+            and bid like concat(concat('%',#{bid}),'%')
+        </if>
+        <if test="status !=null">
+            and status =#{status}
+        </if>
+        <if test="repository_id !=null">
+            and repository_id =#{repository_id}
+        </if>
+        <if test="dayTime !=null">
+            and DATE_SUB(CURDATE(), INTERVAL #{dayTime} DAY) &lt;= date(create_time)
+        </if>
+        and status is not null
+    </select>-->
+
+</mapper>

@@ -49,4 +49,21 @@ public interface CommentService {
      */
     public HashMap<Object, ArrayList> searchGoodAndBadInfo(Comment comment);
 
+    /**
+     * 查询最近的评论list，
+     *
+     * @param user_id
+     * @param start
+     * @return
+     */
+    public List<Comment> searchCommentListRecently(Integer user_id, Integer start);
+
+    /**
+     * 查询评论的数量
+     *
+     * @param user_id
+     * @return
+     */
+    public Integer searchCommentCountRecently(Integer user_id);
+
 }

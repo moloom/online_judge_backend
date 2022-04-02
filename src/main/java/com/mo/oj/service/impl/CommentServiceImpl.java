@@ -28,7 +28,6 @@ public class CommentServiceImpl implements CommentService {
      * @param commentGoodRecord
      * @return
      */
-    @CacheEvict(value = "commentGoodRecord", key = "'commentGood-pid'+#commentGoodRecord.id+'-uid'+#commentGoodRecord.user_id")
     @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
     @Override
     public Boolean changeGoodAndBad(CommentGoodRecord commentGoodRecord) {
@@ -55,7 +54,6 @@ public class CommentServiceImpl implements CommentService {
      * @param comment
      * @return
      */
-    @Cacheable(value = "commentGoodRecord", key = "'commentGood-pid'+#comment.problem_id+'-uid'+#comment.user_id")
     @Transactional(readOnly = true, timeout = 15)
     @Override
     public HashMap<Object, ArrayList> searchGoodAndBadInfo(Comment comment) {
@@ -84,6 +82,31 @@ public class CommentServiceImpl implements CommentService {
             map.put(cm.getId(), arrayList);
         }
         return map;
+    }
+
+    /**
+     * 查询最近的评论list，
+     *
+     * @param user_id
+     * @param start
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public List<Comment> searchCommentListRecently(Integer user_id, Integer start) {
+        return this.commentMapper.searchCommentListRecently(user_id, start);
+    }
+
+    /**
+     * 查询评论的数量
+     *
+     * @param user_id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public Integer searchCommentCountRecently(Integer user_id) {
+        return this.commentMapper.searchCommentCountRecently(user_id);
     }
 
     /**
@@ -116,6 +139,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Boolean deleteComment(Integer id, Integer problem_id) {
         int flag = this.commentMapper.deleteComment(id);
+        //删除评论，需要把评论的点赞点踩记录都删除
+        this.commentMapper.deleteManyCommentGoodRecord(id);
         if (flag != 0)
             return true;
         return false;
@@ -152,5 +177,6 @@ public class CommentServiceImpl implements CommentService {
         //problem、level=2、first_comment_id=一级评论的id，是查出一级评论下的所有2、3级评论
         return commentList;
     }
+
 
 }
