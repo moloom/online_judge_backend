@@ -100,4 +100,27 @@ public class CommentController {
     public Integer searchCommentCountRecently(Integer user_id) {
         return this.commentService.searchCommentCountRecently(user_id);
     }
+
+    /**
+     * 查询一条评论数据，条件id
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/searchCommentOneById")
+    public Comment searchCommentOneById(Integer id) {
+        return this.commentService.searchCommentOneById(id);
+    }
+
+    /**
+     * 查询用户对一条评论的的点赞点踩的谢谢，条件user_id , comment_id
+     *
+     * @param user_id
+     * @param comment_id
+     * @return
+     */
+    @PostMapping("/searchCommentOneGoodAndBad")
+    public HashMap<String, Object> searchCommentOneGoodAndBad(Integer user_id, Integer comment_id) {
+        return this.commentService.searchCommentOneGoodAndBad(user_id, comment_id);
+    }
 }

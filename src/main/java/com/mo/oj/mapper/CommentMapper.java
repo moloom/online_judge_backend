@@ -112,4 +112,13 @@ public interface CommentMapper {
      * @return
      */
     public Integer searchCommentCountRecently(Integer user_id);
+
+    /**
+     * 查询一条评论数据，条件id
+     *
+     * @param id
+     * @return
+     */
+    public Comment searchCommentOneById(Integer id);
+
 }

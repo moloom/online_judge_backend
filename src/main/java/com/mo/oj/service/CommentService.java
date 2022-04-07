@@ -66,4 +66,21 @@ public interface CommentService {
      */
     public Integer searchCommentCountRecently(Integer user_id);
 
+    /**
+     * 查询一条评论数据，条件id
+     *
+     * @param id
+     * @return
+     */
+    public Comment searchCommentOneById(Integer id);
+
+    /**
+     * 查询用户对一条评论的的点赞点踩的谢谢，条件user_id , comment_id
+     *
+     * @param user_id
+     * @param comment_id
+     * @return
+     */
+    public HashMap<String, Object> searchCommentOneGoodAndBad(Integer user_id, Integer comment_id);
+
 }

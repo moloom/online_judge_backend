@@ -3,6 +3,7 @@ package com.mo.oj.service.impl;
 import com.mo.oj.mapper.CommentMapper;
 import com.mo.oj.pojo.Comment;
 import com.mo.oj.pojo.CommentGoodRecord;
+import com.mo.oj.pojo.ProblemGoodRecord;
 import com.mo.oj.service.CommentService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     /**
-     * 查找用户对当前题目中的评论的点赞点踩信息，条件problem_id , user_id
+     * 查找用户对当前题目中的多条评论的点赞点踩信息，条件problem_id , user_id
      * 获取数据后添加到redis缓存
      *
      * @param comment
@@ -110,6 +111,42 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
+     * 查询一条评论数据，条件id
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public Comment searchCommentOneById(Integer id) {
+        return this.commentMapper.searchCommentOneById(id);
+    }
+
+    /**
+     * 查询用户对一条评论的的点赞点踩的谢谢，条件user_id , comment_id
+     *
+     * @param user_id
+     * @param comment_id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public HashMap<String, Object> searchCommentOneGoodAndBad(Integer user_id, Integer comment_id) {
+        //查询comment_good_record表，看有没有点赞点踩的记录，
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("isGood", false);
+        map.put("isBad", false);
+        CommentGoodRecord commentGoodRecord = this.commentMapper.searchCommentGoodRecord(user_id, comment_id);
+        if (commentGoodRecord == null)
+            return map;
+        if (commentGoodRecord.getNumber() > 0)
+            map.replace("isGood", true);
+        else
+            map.replace("isBad", true);
+        return map;
+    }
+
+    /**
      * 插入一条评论 ,插入评论要删除评论的缓存
      *
      * @param comment
@@ -129,7 +166,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * 删除一条评论，删除评论要删除评论的缓存
+     * 删除一条评论，删除评论要删除题目中的评论缓存
      *
      * @param id
      * @return

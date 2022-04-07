@@ -83,6 +83,24 @@
         </if>
     </select>
 
+    <select id="searchCommentOneById" resultType="com.mo.oj.pojo.Comment">
+        select
+        c.*,
+        u.name as userName,
+        u.picture as userPicture,
+        p.title as problemTitle
+        from
+        comment c,
+        problem p,
+        user u
+        where 1=1
+        <if test="id !=null">
+            and c.id=#{id}
+        </if>
+        and c.user_id =u.id
+        and c.problem_id=p.id
+    </select>
+
     <update id="updateCommentNumber">
         update comment
         set good=(select count(1) from comment_good_record where comment_id = #{comment_id} and number &gt; 0),
