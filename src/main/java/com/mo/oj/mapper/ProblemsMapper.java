@@ -25,13 +25,22 @@ public interface ProblemsMapper {
 //    public List<Problem> searchProblemListByConditions(Problem problem);
 
     /**
-     * 查询用户当前已解答的题目list，条件：user_id，status
+     * 查询题目list，条件：user_id，status,difficulty,tag,keyword,user_id,start
      *
      * @param user_id
      * @param status
      * @return
      */
     public List<Problem> searchProblemListByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start);
+
+    /**
+     * 查询题目的数量，条件：user_id，status,difficulty,tag,keyword,user_id
+     *
+     * @param user_id
+     * @param status
+     * @return
+     */
+    public Integer searchProblemCountByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id);
 
     /**
      * 查询一条problem信息，条件id

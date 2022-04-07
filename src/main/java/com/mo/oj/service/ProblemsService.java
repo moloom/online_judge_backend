@@ -27,6 +27,15 @@ public interface ProblemsService {
     public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start);
 
     /**
+     * 查询题目的数量，条件：user_id，status,difficulty,tag,keyword,user_id
+     *
+     * @param user_id
+     * @param status
+     * @return
+     */
+    public Integer searchProblemCountByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id);
+
+    /**
      * 查询一条problem信息，条件id
      *
      * @param id

@@ -29,6 +29,11 @@ public class ProblemController {
         return this.problemsService.searchProblemListByConditions(difficulty, status, tag, keyword, user_id, start);
     }
 
+    @PostMapping("/searchProblemCountByConditions")
+    public Integer searchProblemCountByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id) {
+        return this.problemsService.searchProblemCountByCondition(difficulty, status, tag, keyword, user_id);
+    }
+
     @PostMapping("/searchProblemById")
     public Problem searchProblemById(Integer id) {
         return this.problemsService.searchProblemById(id);

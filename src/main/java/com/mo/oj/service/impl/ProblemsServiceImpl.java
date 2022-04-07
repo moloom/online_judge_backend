@@ -57,6 +57,22 @@ public class ProblemsServiceImpl implements ProblemsService {
     }
 
     /**
+     * 查询题目的数量，条件：user_id，status,difficulty,tag,keyword,user_id
+     *
+     * @param difficulty
+     * @param status
+     * @param tag
+     * @param keyword
+     * @param user_id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 20)
+    @Override
+    public Integer searchProblemCountByCondition(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id) {
+        return this.problemsMapper.searchProblemCountByCondition(difficulty, status, tag, keyword, user_id);
+    }
+
+    /**
      * 查询一条problem信息，条件id
      *
      * @param id
