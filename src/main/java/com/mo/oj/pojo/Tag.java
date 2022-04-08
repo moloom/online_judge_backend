@@ -7,6 +7,17 @@ public class Tag {
     String name;
     Timestamp create_time;
 
+    //标签云的权值
+    String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -37,6 +48,7 @@ public class Tag {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", create_time=" + create_time +
+                ", value=" + value +
                 '}';
     }
 }

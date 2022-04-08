@@ -36,6 +36,22 @@ public class ProblemsServiceImpl implements ProblemsService {
     }
 
     /**
+     * 查询标签，包括权值
+     *
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public List<Tag> searchTagCloudList() {
+        List<Tag> tagList = this.problemsMapper.searchTagAll();
+        //给予标签权值，先把值写死
+        for (int i = 0; i < tagList.size(); ++i) {
+            tagList.get(i).setValue(""+(i+10));
+        }
+        return tagList;
+    }
+
+    /**
      * 查询题目list，条件：difficulty、state、tag、title or id，注：id也是要模糊查询的
      *
      * @param difficulty

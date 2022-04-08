@@ -23,6 +23,11 @@ public class ProblemController {
         return this.problemsService.searchTagAll();
     }
 
+    @PostMapping("/searchTagCloudList")
+    public List<Tag> searchTagCloudList() {
+        return this.problemsService.searchTagCloudList();
+    }
+
     @PostMapping("/searchProblemListByConditions")
     public List<Problem> searchProblemListByConditions(Integer difficulty, Integer status, Integer tag, String keyword, Integer user_id, Integer start) {
         if (start == null) start = 0;

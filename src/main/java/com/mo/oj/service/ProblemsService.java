@@ -15,6 +15,13 @@ public interface ProblemsService {
     public List<Tag> searchTagAll();
 
     /**
+     * 查询标签，包括权值
+     *
+     * @return
+     */
+    public List<Tag> searchTagCloudList();
+
+    /**
      * 查询题目list，条件：difficulty、state、tag、title or id，注：id也是要模糊查询的
      *
      * @param difficulty
