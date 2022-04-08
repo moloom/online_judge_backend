@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mo.oj.mapper.RankingMapper">
+
+    <select id="pointRank" resultType="com.mo.oj.pojo.User" parameterType="java.lang.Integer">
+        select id, name, point
+        from user
+        order by point DESC limit #{start}, #{number}
+    </select>
+
+    <select id="searchAnnouncement" resultType="com.mo.oj.pojo.Announcement">
+        select a.*, u.name as userName, u.picture as userPicture
+        from announcement a,
+             user u
+        where u.id = a.user_id
+        order by create_time DESC limit 0, 9
+    </select>
+
+    <select id="searchAnnouncementOne" resultType="com.mo.oj.pojo.Announcement" parameterType="java.lang.Integer">
+        select a.*, u.name as userName, u.picture as userPicture
+        from announcement a,
+             user u
+        where u.id = a.user_id
+          and a.id = #{id}
+    </select>
+
+
+</mapper>
