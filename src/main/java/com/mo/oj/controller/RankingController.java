@@ -2,6 +2,7 @@ package com.mo.oj.controller;
 
 import com.mo.oj.pojo.Announcement;
 import com.mo.oj.pojo.Comment;
+import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.User;
 import com.mo.oj.service.RankingService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,5 +53,38 @@ public class RankingController {
     @PostMapping("/searchAnnouncementOne")
     public Announcement searchAnnouncementOne(Integer id) {
         return this.rankingService.searchAnnouncementOne(id);
+    }
+
+    /**
+     * 查询提交次数排行榜
+     *
+     * @param start
+     * @return
+     */
+    @PostMapping("/searchSubmitTimesRank")
+    public List<Problem> searchSubmitTimesRank(Integer start) {
+        return this.rankingService.searchSubmitTimesRank(start);
+    }
+
+    /**
+     * 查询提交人数排行榜
+     *
+     * @param start
+     * @return
+     */
+    @PostMapping("/searchSubmitNumberRank")
+    public List<Problem> searchSubmitNumberRank(Integer start) {
+        return this.rankingService.searchSubmitNumberRank(start);
+    }
+
+    /**
+     * 查询提交次数通过率排行榜
+     *
+     * @param start
+     * @return
+     */
+    @PostMapping("/searchTimesPassRateRank")
+    public List<Problem> searchTimesPassRateRank(Integer start) {
+        return this.rankingService.searchTimesPassRateRank(start);
     }
 }

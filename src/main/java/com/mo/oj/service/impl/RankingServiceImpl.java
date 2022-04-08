@@ -3,6 +3,7 @@ package com.mo.oj.service.impl;
 import com.mo.oj.mapper.RankingMapper;
 import com.mo.oj.pojo.Announcement;
 import com.mo.oj.pojo.Comment;
+import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.User;
 import com.mo.oj.service.RankingService;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,41 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public Announcement searchAnnouncementOne(Integer id) {
         return this.rankingMapper.searchAnnouncementOne(id);
+    }
+
+    /**
+     * 查询提交次数排行榜
+     *
+     * @param start
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 20)
+    @Override
+    public List<Problem> searchSubmitTimesRank(Integer start) {
+        return this.rankingMapper.searchSubmitTimesRank(start);
+    }
+
+    /**
+     * 查询提交人数排行榜
+     *
+     * @param start
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 20)
+    @Override
+    public List<Problem> searchSubmitNumberRank(Integer start) {
+        return this.rankingMapper.searchSubmitNumberRank(start);
+    }
+
+    /**
+     * 查询提交次数通过率排行榜
+     *
+     * @param start
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 20)
+    @Override
+    public List<Problem> searchTimesPassRateRank(Integer start) {
+        return this.rankingMapper.searchTimesPassRateRank(start);
     }
 }

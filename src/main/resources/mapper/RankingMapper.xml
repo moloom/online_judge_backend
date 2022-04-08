@@ -4,7 +4,7 @@
 <mapper namespace="com.mo.oj.mapper.RankingMapper">
 
     <select id="pointRank" resultType="com.mo.oj.pojo.User" parameterType="java.lang.Integer">
-        select id, name, point
+        select *
         from user
         order by point DESC limit #{start}, #{number}
     </select>
@@ -23,6 +23,24 @@
              user u
         where u.id = a.user_id
           and a.id = #{id}
+    </select>
+
+    <select id="searchSubmitTimesRank" resultType="com.mo.oj.pojo.Problem" parameterType="java.lang.Integer">
+        select id,title,submit_times,latest_submit
+        from problem
+        order by submit_times DESC limit #{satrt},30
+    </select>
+
+    <select id="searchSubmitNumberRank" resultType="com.mo.oj.pojo.Problem" parameterType="java.lang.Integer">
+        select id,title,submit_number,latest_submit
+        from problem
+        order by submit_number DESC limit #{satrt},30
+    </select>
+
+    <select id="searchTimesPassRateRank" resultType="com.mo.oj.pojo.Problem" parameterType="java.lang.Integer">
+        select id,title,submit_times,submit_pass_times,latest_submit
+        from problem
+        order by submit_pass_times/submit_times DESC limit #{satrt},30
     </select>
 
 

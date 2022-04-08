@@ -12,11 +12,20 @@ public class User {
     String email;
     Integer email_status;
     String verify_code;
+    String signature;
     Integer point;
     Integer prefer_language;
     String picture;
     Timestamp create_time;
     Timestamp modify_time;
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     public String getPassword() {
         return password;
@@ -142,6 +151,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", email_status=" + email_status +
                 ", verify_code='" + verify_code + '\'' +
+                ", signature='" + signature + '\'' +
                 ", point=" + point +
                 ", prefer_language=" + prefer_language +
                 ", picture='" + picture + '\'' +

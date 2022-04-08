@@ -2,6 +2,7 @@ package com.mo.oj.mapper;
 
 import com.mo.oj.pojo.Announcement;
 import com.mo.oj.pojo.Comment;
+import com.mo.oj.pojo.Problem;
 import com.mo.oj.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -38,4 +39,28 @@ public interface RankingMapper {
      * @return
      */
     public Announcement searchAnnouncementOne(Integer id);
+
+    /**
+     * 查询提交次数排行榜
+     *
+     * @param start
+     * @return
+     */
+    public List<Problem> searchSubmitTimesRank(Integer start);
+
+    /**
+     * 查询提交人数排行榜
+     *
+     * @param start
+     * @return
+     */
+    public List<Problem> searchSubmitNumberRank(Integer start);
+
+    /**
+     * 查询提交次数通过率排行榜
+     *
+     * @param start
+     * @return
+     */
+    public List<Problem> searchTimesPassRateRank(Integer start);
 }
