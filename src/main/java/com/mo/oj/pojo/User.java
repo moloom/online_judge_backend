@@ -19,6 +19,16 @@ public class User {
     Timestamp create_time;
     Timestamp modify_time;
 
+    String preferLanguageName;
+
+    public String getPreferLanguageName() {
+        return preferLanguageName;
+    }
+
+    public void setPreferLanguageName(String preferLanguageName) {
+        this.preferLanguageName = preferLanguageName;
+    }
+
     public String getSignature() {
         return signature;
     }
@@ -157,6 +167,7 @@ public class User {
                 ", picture='" + picture + '\'' +
                 ", create_time=" + create_time +
                 ", modify_time=" + modify_time +
+                ", preferLanguageName='" + preferLanguageName + '\'' +
                 '}';
     }
 }

@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+import java.util.List;
+
 @Mapper
 @Repository
 public interface UserMapper {
@@ -31,6 +34,15 @@ public interface UserMapper {
     public User searchUserByEmailAndPassword(User user);
 
     /**
+     * 查询一条user信息，条件id
+     *
+     * @param id
+     * @return
+     */
+    @Select("select u.*,l.name as preferLanguageName from user u,language l where u.id=#{id} and u.prefer_language=l.id")
+    public User searchUserById(Integer id);
+
+    /**
      * 查找一条user记录；条件name
      *
      * @param name
@@ -47,6 +59,21 @@ public interface UserMapper {
      */
     @Select("select count(1) from user where email=#{email}")
     public Integer searchUserByEmail(String email);
+
+    /**
+     * 查询用户对各个难度题目的解答数量
+     *
+     * @param user_id
+     * @return
+     */
+    public List<HashMap<String, Integer>> searchUserSolveProblemInfoGroupByDifficulty(Integer user_id);
+
+    /**
+     * 查询根据难度分组的题目数量
+     *
+     * @return
+     */
+    public List<HashMap<String, Integer>> searchProblemCountGroupByDifficulty();
 
     /**
      * 修改用户信息

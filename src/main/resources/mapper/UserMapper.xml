@@ -69,6 +69,20 @@
           and email = #{email}
           and verify_code = #{verify_code}
     </update>
+
+    <select id="searchUserSolveProblemInfoGroupByDifficulty" parameterType="java.lang.Integer"
+            resultType="java.util.HashMap">
+        select difficulty, count(*) as count
+        from problem
+        where id in (select problem_id from submission where user_id = #{user_id} and status = 1 group by problem_id)
+        group by difficulty
+    </select>
+
+    <select id="searchProblemCountGroupByDifficulty" resultType="java.util.HashMap">
+        select difficulty, count(*) as count
+        from problem
+        group by difficulty
+    </select>
     <!--
         <select id="searchProblemListByCondition" resultType="com.mo.oj.pojo.Problem">
             select p.*

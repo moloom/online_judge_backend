@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -114,4 +117,53 @@ public class UserServiceImpl implements UserService {
             return "error";
         return "success";
     }
+
+    /**
+     * 查询一条user信息，条件id
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public User searchUserById(Integer id) {
+        return this.userMapper.searchUserById(id);
+    }
+
+    /**
+     * 查询用户对各个难度题目的解答数量
+     *
+     * @param user_id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public List<HashMap<String, Object>> searchUserSolveProblemInfoGroupByDifficulty(Integer user_id) {
+        List<HashMap<String, Object>> hashMapList = new ArrayList<HashMap<String, Object>>();
+        //初始化map信息
+        for (int i=0; i < 3; ++i) {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("difficulty",i);
+            map.put("solve",0);
+            map.put("total",0);
+            hashMapList.add(map);
+        }
+        //获取用户对各个难度题目的解答题目数量
+        List<HashMap<String, Integer>> userMap = this.userMapper.searchUserSolveProblemInfoGroupByDifficulty(user_id);
+        //按难度来获取各种难度的题目数量
+        List<HashMap<String, Integer>> problemMap = this.userMapper.searchProblemCountGroupByDifficulty();
+        //双层循环匹配相等的difficulty。不能只用一个for循环，要考虑到sql返回的数据difficultyId为1的不一定在第一行
+        for (int i = 0; i < userMap.size(); ++i) {
+            for (int j = 0; j < problemMap.size(); ++j) {
+                //如果难度匹配，把两条信息整合到一条信息中
+                if (userMap.get(i).get("difficulty") == problemMap.get(j).get("difficulty")) {
+                    hashMapList.get(userMap.get(i).get("difficulty")-1).replace("solve",userMap.get(i).get("count"));
+                    hashMapList.get(userMap.get(i).get("difficulty")-1).replace("total",problemMap.get(j).get("count"));
+                }
+            }
+        }
+        return hashMapList;
+    }
+
+
 }
