@@ -1,18 +1,33 @@
 package com.mo.oj.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.mo.oj.pojo.Language;
 import com.mo.oj.pojo.User;
 import com.mo.oj.service.UserService;
 import com.mo.oj.utils.IsEmpty;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,4 +93,63 @@ public class UserController {
         return this.userService.searchUserSolveProblemInfoGroupByDifficulty(user_id);
     }
 
+    /**
+     * 查询所有语言
+     *
+     * @return
+     */
+    @PostMapping("/searchLanguageList")
+    public List<Language> searchLanguageList() {
+        return this.userService.searchLanguageList();
+    }
+
+    /**
+     * 上传头像
+     *
+     * @param upload
+     * @param id
+     * @return
+     */
+    @PostMapping("/upload")
+    public Boolean upload(@RequestPart(value = "file") MultipartFile upload, Integer id) {
+        return this.userService.upload(upload, id);
+    }
+
+    /**
+     * 修改用户信息
+     *
+     * @param user
+     * @return
+     */
+    @PostMapping("/updateUser")
+    public Boolean updateUser(User user) {
+        return this.userService.updateUser(user);
+    }
+
+    /**
+     * 修改用户昵称
+     *
+     * @param user
+     * @return
+     */
+    @PostMapping("/updateUserName")
+    public String updateUserName(User user) {
+        return this.userService.updateUserName(user);
+    }
+
+    /**
+     * 获取图片
+     *
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImage(String name) throws IOException {
+        File file = new File("/tem/picture/" + name);
+        FileInputStream inputStream = new FileInputStream(file);
+        byte[] bytes = new byte[inputStream.available()];
+        inputStream.read(bytes, 0, inputStream.available());
+        return bytes;
+    }
 }

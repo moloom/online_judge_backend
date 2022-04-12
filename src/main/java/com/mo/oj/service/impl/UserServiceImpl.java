@@ -1,17 +1,21 @@
 package com.mo.oj.service.impl;
 
 import com.mo.oj.mapper.UserMapper;
+import com.mo.oj.pojo.Language;
 import com.mo.oj.pojo.Mail;
 import com.mo.oj.pojo.User;
 import com.mo.oj.service.UserService;
 import com.mo.oj.utils.MailUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mo.oj.utils.Upload;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,11 +145,11 @@ public class UserServiceImpl implements UserService {
     public List<HashMap<String, Object>> searchUserSolveProblemInfoGroupByDifficulty(Integer user_id) {
         List<HashMap<String, Object>> hashMapList = new ArrayList<HashMap<String, Object>>();
         //初始化map信息
-        for (int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("difficulty",i);
-            map.put("solve",0);
-            map.put("total",0);
+            map.put("difficulty", i);
+            map.put("solve", 0);
+            map.put("total", 0);
             hashMapList.add(map);
         }
         //获取用户对各个难度题目的解答题目数量
@@ -157,12 +161,86 @@ public class UserServiceImpl implements UserService {
             for (int j = 0; j < problemMap.size(); ++j) {
                 //如果难度匹配，把两条信息整合到一条信息中
                 if (userMap.get(i).get("difficulty") == problemMap.get(j).get("difficulty")) {
-                    hashMapList.get(userMap.get(i).get("difficulty")-1).replace("solve",userMap.get(i).get("count"));
-                    hashMapList.get(userMap.get(i).get("difficulty")-1).replace("total",problemMap.get(j).get("count"));
+                    hashMapList.get(userMap.get(i).get("difficulty") - 1).replace("solve", userMap.get(i).get("count"));
+                    hashMapList.get(userMap.get(i).get("difficulty") - 1).replace("total", problemMap.get(j).get("count"));
                 }
             }
         }
         return hashMapList;
+    }
+
+    /**
+     * 查询所有语言
+     *
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Cacheable(value = "language", key = "'List'", unless = "#result == null")
+    @Override
+    public List<Language> searchLanguageList() {
+        return this.userMapper.searchLanguageList();
+    }
+
+    /**
+     * 上传头像
+     *
+     * @param upload
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
+    @Override
+    public Boolean upload(MultipartFile upload, Integer id) {
+        String fileName = Upload.upload(upload);
+        //如果文件创建成功就修改用户的头像地址
+        if (fileName != null) {
+            User user = new User();
+            user.setId(id);
+            user.setPicture("http://localhost:8888/user/image?name=" + fileName);
+            int flag = this.userMapper.updateUserById(user);
+            if (flag == 1)
+                return true;
+            else
+                return false;
+        } else
+            return false;
+    }
+
+    /**
+     * 修改用户信息
+     *
+     * @param user
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
+    @Override
+    public Boolean updateUser(User user) {
+        int flag = this.userMapper.updateUserById(user);
+        System.out.println(flag);
+        if (flag != 0)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 修改用户昵称
+     *
+     * @param user
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
+    @Override
+    public String updateUserName(User user) {
+        //判断是否昵称、邮箱是否已被注册
+        User user2 = this.userMapper.searchUserByName(user.getName());
+        if (user2 != null)
+            return "nameError";
+        //扣除M币值
+        user.setPoint(user.getPoint() - 10);
+        int flag = this.userMapper.updateUserById(user);
+        if (flag != 0)
+            return "success";
+        return "error";
     }
 
 

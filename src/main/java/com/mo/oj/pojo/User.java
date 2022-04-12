@@ -1,5 +1,7 @@
 package com.mo.oj.pojo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.sql.Timestamp;
 
 public class User {

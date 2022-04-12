@@ -1,5 +1,6 @@
 package com.mo.oj.mapper;
 
+import com.mo.oj.pojo.Language;
 import com.mo.oj.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -59,6 +60,14 @@ public interface UserMapper {
      */
     @Select("select count(1) from user where email=#{email}")
     public Integer searchUserByEmail(String email);
+
+    /**
+     * 查询所有语言
+     *
+     * @return
+     */
+    @Select("select * from language")
+    public List<Language> searchLanguageList();
 
     /**
      * 查询用户对各个难度题目的解答数量

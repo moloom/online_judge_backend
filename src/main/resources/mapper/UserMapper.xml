@@ -57,7 +57,7 @@
         <if test="picture !=null and picture !=''">
             picture = #{picture},
         </if>
-        modify_time=now(),
+        modify_time=now()
         where id=#{id}
     </update>
 

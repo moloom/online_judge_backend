@@ -1,7 +1,10 @@
 package com.mo.oj.service;
 
 
+import com.mo.oj.pojo.Language;
 import com.mo.oj.pojo.User;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,4 +58,35 @@ public interface UserService {
      * @return
      */
     public List<HashMap<String, Object>> searchUserSolveProblemInfoGroupByDifficulty(Integer user_id);
+
+    /**
+     * 查询所有语言
+     *
+     * @return
+     */
+    public List<Language> searchLanguageList();
+
+    /**
+     * 上传头像
+     *
+     * @param upload
+     * @return
+     */
+    public Boolean upload(MultipartFile upload, Integer id);
+
+    /**
+     * 修改用户信息
+     *
+     * @param user
+     * @return
+     */
+    public Boolean updateUser(User user);
+
+    /**
+     * 修改用户昵称
+     *
+     * @param user
+     * @return
+     */
+    public String updateUserName(User user);
 }
