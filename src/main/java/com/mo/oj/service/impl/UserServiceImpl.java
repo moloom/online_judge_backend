@@ -182,6 +182,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 查询题目的提交量，根据提交状态分组
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true, timeout = 15)
+    @Override
+    public List<HashMap<String, Object>> searchSubmissionCountGroupByStatus(Integer id) {
+        return this.userMapper.searchSubmissionCountGroupByStatus(id);
+    }
+
+    /**
      * 上传头像
      *
      * @param upload

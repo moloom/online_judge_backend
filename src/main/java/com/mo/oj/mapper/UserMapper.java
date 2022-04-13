@@ -85,6 +85,15 @@ public interface UserMapper {
     public List<HashMap<String, Integer>> searchProblemCountGroupByDifficulty();
 
     /**
+     * 查询题目的提交量，根据提交状态分组
+     *
+     * @param id
+     * @return
+     */
+    @Select("select count(*) as value,ss.name from submission s,submission_status ss where s.status=ss.id and s.problem_id=#{id} group by ss.id")
+    public List<HashMap<String, Object>> searchSubmissionCountGroupByStatus(Integer id);
+
+    /**
      * 修改用户信息
      *
      * @param user

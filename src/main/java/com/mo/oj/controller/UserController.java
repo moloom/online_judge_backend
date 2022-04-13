@@ -152,4 +152,15 @@ public class UserController {
         inputStream.read(bytes, 0, inputStream.available());
         return bytes;
     }
+
+    /**
+     * 查询题目的提交量，根据提交状态分组
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/searchSubmissionCountGroupByStatus")
+    public List<HashMap<String, Object>> searchSubmissionCountGroupByStatus(Integer id) {
+        return this.userService.searchSubmissionCountGroupByStatus(id);
+    }
 }

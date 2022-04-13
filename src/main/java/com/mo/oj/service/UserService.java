@@ -3,6 +3,7 @@ package com.mo.oj.service;
 
 import com.mo.oj.pojo.Language;
 import com.mo.oj.pojo.User;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,6 +66,14 @@ public interface UserService {
      * @return
      */
     public List<Language> searchLanguageList();
+
+    /**
+     * 查询题目的提交量，根据提交状态分组
+     *
+     * @param id
+     * @return
+     */
+    public List<HashMap<String, Object>> searchSubmissionCountGroupByStatus(Integer id);
 
     /**
      * 上传头像
