@@ -166,23 +166,22 @@
         where id = #{problem_id}
     </update>
 
-    <!--
-    <select id="findMiorCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(1) from m_in_out_repository
-        where 1=1
-        <if test="bid !=null and bid !=''">
-            and bid like concat(concat('%',#{bid}),'%')
-        </if>
-        <if test="status !=null">
-            and status =#{status}
-        </if>
-        <if test="repository_id !=null">
-            and repository_id =#{repository_id}
-        </if>
-        <if test="dayTime !=null">
-            and DATE_SUB(CURDATE(), INTERVAL #{dayTime} DAY) &lt;= date(create_time)
-        </if>
-        and status is not null
-    </select>-->
+    <update id="updateUserPoint" parameterType="com.mo.oj.pojo.User">
+        update user
+        set point=(select sum(point) from point_record where user_id = #{id}),
+            modify_time=now()
+        where id = #{id}
+    </update>
+
+    <insert id="insertPointRecord" parameterType="com.mo.oj.pojo.PointRecord">
+        insert into point_record(user_id,
+                                 point,
+                                 create_by,
+                                 create_time)
+        values (#{user_id},
+                #{point},
+                #{create_by},
+                now())
+    </insert>
 
 </mapper>

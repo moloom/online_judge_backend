@@ -68,6 +68,7 @@ public class UserController {
                 IsEmpty.isEmptyOfString(user.getPassword()) ||
                 IsEmpty.isEmptyOfString(user.getEmail()))
             return "error";
+        user.setPrefer_language(1);
         return this.userService.register(user);
     }
 

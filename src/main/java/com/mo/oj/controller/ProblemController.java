@@ -83,6 +83,17 @@ public class ProblemController {
     }
 
     /**
+     * 用户提交代码
+     *
+     * @param submission
+     * @return
+     */
+    @PostMapping("/submitCode")
+    public Integer submitCode(Submission submission) {
+        return this.problemsService.submitCode(submission);
+    }
+
+    /**
      * 初始化时，获取用户上次保存的代码
      *
      * @param submission

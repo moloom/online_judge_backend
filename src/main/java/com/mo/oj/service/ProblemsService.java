@@ -2,6 +2,7 @@ package com.mo.oj.service;
 
 import com.mo.oj.pojo.*;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,6 +96,14 @@ public interface ProblemsService {
      * @return
      */
     public Boolean saveCode(Submission submission);
+
+    /**
+     * 用户提交代码
+     *
+     * @param submission
+     * @return
+     */
+    public Integer submitCode(Submission submission);
 
     /**
      * 初始化时获取用户上次保存的代码

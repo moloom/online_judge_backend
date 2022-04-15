@@ -1,10 +1,7 @@
 package com.mo.oj.mapper;
 
 import com.mo.oj.pojo.*;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -75,6 +72,7 @@ public interface ProblemsMapper {
     @Select("select * from tag")
     public List<Tag> searchTagAll();
 
+
     /*---------favorite--------------------------------------------------------*/
 
     /**
@@ -134,6 +132,35 @@ public interface ProblemsMapper {
     @Delete("delete from problem_good_record where problem_id=#{problem_id} and user_id=#{user_id}")
     public Integer deleteProblemGoodRecord(ProblemGoodRecord problemGoodRecord);
 
+
+    /*---------useCases--------------------------------------------------------*/
+
+    /**
+     * 查找测试用例，条件problem_id
+     *
+     * @return
+     */
+    @Select("select * from use_cases where problem_id=#{problem_id}")
+    public List<UseCases> searchUseCaseList(Integer problem_id);
+
+    /*---------point_record--------------------------------------------------------*/
+
+
+    /**
+     * 新增条件积分流水信息
+     *
+     * @param pointRecord
+     * @return
+     */
+    public Integer insertPointRecord(PointRecord pointRecord);
+
+    /**
+     * 修改用户的积分值
+     *
+     * @param user
+     * @return
+     */
+    public Integer updateUserPoint(User user);
 
     /*---------language--------------------------------------------------------*/
 

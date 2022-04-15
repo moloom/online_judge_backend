@@ -45,6 +45,33 @@ public interface SubmissionMapper {
     public Submission searchSubmissionByStatusAndUserIdAndProblemId(Submission submission);
 
     /**
+     * 查找用户最近一条提交记录的id
+     *
+     * @return
+     */
+    @Select("select id from submission where user_id=#{user_id} order by create_time DESC limit 0,1")
+    public Integer searchSubmissionIdByCreate_timeDESCAndUserId(Integer user_id);
+
+
+    /**
+     * 查询是否第一次提交这道题的代码，条件problem_id,user_id
+     *
+     * @param submission
+     * @return
+     */
+    @Select("select count(*) from submission where user_id=#{user_id} and problem_id=#{problem_id} and status!=0")
+    public Integer isFirstTimes(Submission submission);
+
+    /**
+     * 查询是否第一次提交这道题的代码，条件problem_id,user_id
+     *
+     * @param submission
+     * @return
+     */
+    @Select("select count(1) from submission where user_id=#{user_id} and problem_id=#{problem_id} and status=1")
+    public Integer isFirstPass(Submission submission);
+
+    /**
      * 新增提交记录
      *
      * @param submission

@@ -114,6 +114,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(1);
         user.setEmail_status(0);
         user.setPoint(0);
+        user.setPrefer_language(1);//默认是c否则查看主页会出错
         user.setPicture("https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png");
         int flag = this.userMapper.insertUser(user);
         System.out.println("register:::::" + flag);

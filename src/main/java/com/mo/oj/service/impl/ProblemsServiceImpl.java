@@ -4,6 +4,7 @@ import com.mo.oj.mapper.ProblemsMapper;
 import com.mo.oj.mapper.SubmissionMapper;
 import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
+import com.mo.oj.utils.JudgeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,7 +51,7 @@ public class ProblemsServiceImpl implements ProblemsService {
         List<Tag> tagList = this.problemsMapper.searchTagAll();
         //给予标签权值，先把值写死
         for (int i = 0; i < tagList.size(); ++i) {
-            tagList.get(i).setValue(""+(i+10));
+            tagList.get(i).setValue("" + (i + 10));
         }
         return tagList;
     }
@@ -221,6 +226,111 @@ public class ProblemsServiceImpl implements ProblemsService {
         if (flag > 0)
             return true;
         return false;
+    }
+
+
+    /**
+     * 用户提交代码
+     *
+     * @param submission
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class}, propagation = Propagation.REQUIRED, timeout = 15)
+    @Override
+    public Integer submitCode(Submission submission) {
+        //修改暂存的代码
+        submission.setStatus(0);
+        int flag = 0;
+        Submission searchSubmission = this.submissionMapper.searchSubmissionByStatusAndUserIdAndProblemId(submission);
+        if (searchSubmission == null) {
+            flag = this.submissionMapper.insertSubmission(submission);
+        } else {
+            submission.setId(searchSubmission.getId());
+            flag = this.submissionMapper.updateSubmission(submission);
+        }
+        try {
+            String useCasePath = "/tem/useCaseDir/";
+            File useCaseFile = new File(useCasePath + submission.getProblem_id());
+            //如果测试用例文件夹不存在，则创建测试用例文件
+            if (!useCaseFile.exists()) {
+                useCaseFile.mkdir();
+                List<UseCases> useCasesList = this.problemsMapper.searchUseCaseList(submission.getProblem_id());
+                //循环写入测试用例文件
+                for (int i = 0; i < useCasesList.size(); ++i) {
+                    File in = new File(useCasePath + submission.getProblem_id() + "/" + i + 1 + ".in");
+                    File out = new File(useCasePath + submission.getProblem_id() + "/" + i + 1 + ".out");
+                    //创建文件
+                    in.createNewFile();
+                    out.createNewFile();
+
+                    FileOutputStream fosIn = new FileOutputStream(in);
+                    FileOutputStream fosOut = new FileOutputStream(out);
+                    //写入内容到文件
+                    fosIn.write(useCasesList.get(i).getInput().getBytes(StandardCharsets.UTF_8));
+                    fosOut.write(useCasesList.get(i).getOutput().getBytes(StandardCharsets.UTF_8));
+                    fosIn.close();
+                    fosOut.close();
+                }
+                //写完后，生成data.conf
+                Process execProcess = Runtime.getRuntime().exec("bash /tem/javaTest/judge/buildCaseDir " + useCaseFile);
+                if (execProcess.waitFor() == 1) {
+                    System.out.println("测试用例---data.conf生成失败！");
+                    return null;
+                }
+            }
+            //判题
+            Submission submission1 = JudgeService.judge(submission);
+            if (submission1 == null)
+                return null;
+            //修改题目的一些数据
+            Problem problem = this.problemsMapper.searchProblemById(submission.getProblem_id());
+            //判断是不是第一次提交这题，如果是就算进去
+            int countOfTime = this.submissionMapper.isFirstTimes(submission);
+            if (countOfTime == 0)
+                problem.setSubmit_number(problem.getSubmit_number() + 1);
+            problem.setSubmit_times(problem.getSubmit_times() + 1);
+            problem.setLatest_submitFlag(1);
+            problem.setModify_by(submission.getUser_id());
+
+            submission.setId(null);
+            //新增一条提交信息
+            int flag1 = this.submissionMapper.insertSubmission(submission);
+            //正常通过，修改一些数据
+            if (submission1.getStatus() == 1) {
+                //修改题目的通过人数量、通过次数量
+                problem.setSubmit_pass_times(problem.getSubmit_pass_times() + 1);
+
+                //判断是不是第一次答对这题，如果不是则不算进去
+                int countOfPass = this.submissionMapper.isFirstPass(submission);
+                System.out.println("countOfPass" + countOfPass);
+                if (countOfPass == 1) {
+                    problem.setSubmit_pass_number(problem.getSubmit_pass_number() + 1);
+                    //新增一条积分记录
+                    PointRecord pointRecord = new PointRecord();
+                    pointRecord.setPoint(problem.getPoint());
+                    pointRecord.setCreate_by(submission.getUser_id());
+                    pointRecord.setUser_id(submission.getUser_id());
+                    int flag3 = this.problemsMapper.insertPointRecord(pointRecord);
+
+                    //修改用户M币值
+                    User user = new User();
+                    user.setId(submission.getUser_id());
+                    int flag4 = this.problemsMapper.updateUserPoint(user);
+                    //如果有修改失败的，直接返回false
+                    if (flag3 == 0 || flag4 == 0)
+                        return null;
+                }
+            }
+            int flag2 = this.problemsMapper.updateProblem(problem);
+            if (flag2 == 0 || flag1 == 0)
+                return null;
+//            return this.submissionMapper.searchSubmissionIdByCreate_timeDESCAndUserId(submission.getUser_id());
+            return submission.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("提交代码错误");
+            return null;
+        }
     }
 
     /**

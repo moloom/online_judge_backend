@@ -12,7 +12,6 @@
         </if>
         <if test="status!=null">
             and s.status=#{status}
-            and s.satus!=0
         </if>
         <if test="language!=null">
             and s.language=#{language}
@@ -20,7 +19,7 @@
         <if test="user_id!=null">
             and s.user_id=#{user_id}
         </if>
-
+        and s.status!=0
         and u.id=s.user_id
         and p.id=s.problem_id
         and ss.id=s.status
@@ -50,12 +49,12 @@
         select count(1)
         from submission s
         where 1=1
+        and s.status!=0
         <if test="problem_id!=null">
             and s.problem_id=#{problem_id}
         </if>
         <if test="status!=null">
             and s.status=#{status}
-            and s.satus!=0
         </if>
         <if test="language!=null">
             and s.language=#{language}
@@ -65,7 +64,8 @@
         </if>
     </select>
 
-    <insert id="insertSubmission" parameterType="com.mo.oj.pojo.Submission">
+    <!--keyColumn="id" keyProperty="id" useGeneratedKeys="true" 用于获取新插入的记录id，并存入传入对象的id中-->
+    <insert id="insertSubmission" parameterType="com.mo.oj.pojo.Submission" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         insert into submission(problem_id,
                                exec_time,
                                consume_memory,
@@ -90,7 +90,7 @@
                 now())
     </insert>
 
-    <update id="updateSubmit" parameterType="com.mo.oj.pojo.Submission">
+    <update id="updateSubmission" parameterType="com.mo.oj.pojo.Submission">
         update submission set
         <if test="problem_id !=null">
             problem_id = #{problem_id},
