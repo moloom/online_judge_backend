@@ -2,6 +2,8 @@ package com.mo.oj.controller;
 
 import com.mo.oj.pojo.*;
 import com.mo.oj.service.ProblemsService;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,6 +91,7 @@ public class ProblemController {
      * @return
      */
     @PostMapping("/submitCode")
+//    @Async
     public Integer submitCode(Submission submission) {
         return this.problemsService.submitCode(submission);
     }

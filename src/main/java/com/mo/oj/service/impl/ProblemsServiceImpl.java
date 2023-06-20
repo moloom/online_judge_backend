@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.*;
 
 @Service
 public class ProblemsServiceImpl implements ProblemsService {
@@ -27,6 +28,9 @@ public class ProblemsServiceImpl implements ProblemsService {
 
     @Resource
     SubmissionMapper submissionMapper;
+
+    //初始化线程池
+    ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     /**
      * 查询所有的标签, unless = "#result==null"
@@ -278,43 +282,50 @@ public class ProblemsServiceImpl implements ProblemsService {
                     return null;
                 }
             }
-            //判题
-            Submission submission1 = JudgeService.judge(submission);
+            //开启多线程判题
+/*            FutureTask<Submission> futureTask = new FutureTask<Submission>(() -> {
+                return new JudgeService().judge(submission);
+            });
+            executorService.submit(futureTask);
+            //获取评测结果
+            Submission submission1 = futureTask.get();*/
+            JudgeService judgeService = new JudgeService();
+            Submission submission1 = judgeService.judge(submission);
+
             if (submission1 == null)
                 return null;
             //修改题目的一些数据
-            Problem problem = this.problemsMapper.searchProblemById(submission.getProblem_id());
+            Problem problem = this.problemsMapper.searchProblemById(submission1.getProblem_id());
             //判断是不是第一次提交这题，如果是就算进去
-            int countOfTime = this.submissionMapper.isFirstTimes(submission);
+            int countOfTime = this.submissionMapper.isFirstTimes(submission1);
             if (countOfTime == 0)
                 problem.setSubmit_number(problem.getSubmit_number() + 1);
             problem.setSubmit_times(problem.getSubmit_times() + 1);
             problem.setLatest_submitFlag(1);
-            problem.setModify_by(submission.getUser_id());
+            problem.setModify_by(submission1.getUser_id());
 
-            submission.setId(null);
+            submission1.setId(null);
             //新增一条提交信息
-            int flag1 = this.submissionMapper.insertSubmission(submission);
+            int flag1 = this.submissionMapper.insertSubmission(submission1);
             //正常通过，修改一些数据
             if (submission1.getStatus() == 1) {
                 //修改题目的通过人数量、通过次数量
                 problem.setSubmit_pass_times(problem.getSubmit_pass_times() + 1);
 
                 //判断是不是第一次答对这题，如果不是则不算进去
-                int countOfPass = this.submissionMapper.isFirstPass(submission);
-                System.out.println("countOfPass" + countOfPass);
+                int countOfPass = this.submissionMapper.isFirstPass(submission1);
                 if (countOfPass == 1) {
                     problem.setSubmit_pass_number(problem.getSubmit_pass_number() + 1);
                     //新增一条积分记录
                     PointRecord pointRecord = new PointRecord();
                     pointRecord.setPoint(problem.getPoint());
-                    pointRecord.setCreate_by(submission.getUser_id());
-                    pointRecord.setUser_id(submission.getUser_id());
+                    pointRecord.setCreate_by(submission1.getUser_id());
+                    pointRecord.setUser_id(submission1.getUser_id());
                     int flag3 = this.problemsMapper.insertPointRecord(pointRecord);
 
                     //修改用户M币值
                     User user = new User();
-                    user.setId(submission.getUser_id());
+                    user.setId(submission1.getUser_id());
                     int flag4 = this.problemsMapper.updateUserPoint(user);
                     //如果有修改失败的，直接返回false
                     if (flag3 == 0 || flag4 == 0)
@@ -325,7 +336,7 @@ public class ProblemsServiceImpl implements ProblemsService {
             if (flag2 == 0 || flag1 == 0)
                 return null;
 //            return this.submissionMapper.searchSubmissionIdByCreate_timeDESCAndUserId(submission.getUser_id());
-            return submission.getId();
+            return submission1.getId();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("提交代码错误");

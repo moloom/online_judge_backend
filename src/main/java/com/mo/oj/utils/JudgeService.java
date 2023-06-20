@@ -14,12 +14,13 @@ import java.util.Arrays;
  * @description: 判题服务
  */
 public class JudgeService {
-    private static String path = "/tem/temWorkSpace/";//工作目录
-    private static String[] language = {"", "c", "java"};//编程语言源文件的后缀
-    private static String useCaseDir = "/tem/useCaseDir/";//测试用例文件夹
+    private volatile String path = "/tem/temWorkSpace/";//工作目录
+    private volatile String[] language = {"", "c", "java"};//编程语言源文件的后缀
+    private volatile String useCaseDir = "/tem/useCaseDir/";//测试用例文件夹
 
-    public static Submission judge(Submission submission) {
+    public Submission judge(Submission submission) {
         try {
+//            System.out.println(Thread.currentThread().getName() + "----------" + this.toString());
             //生成一个20位的临时文件夹名称,
             String randomString = RandomString.getRandomString(20);
             //和工作目录拼接，成为此次提交的临时编译目录
@@ -65,9 +66,7 @@ public class JudgeService {
                 System.out.println("编译错误");
                 return submission;
             }
-
             //编译成功，则评测代码
-
             //拼接执行语句
             String command = "/tem/javaTest/judge/a.out -t 2000 -m 65536 -f 4096 --basedir " + dirName + " --datadir " + useCaseDir + submission.getProblem_id() + " --who 65534 --magic userOutput --end ";
             Process execProcess;
@@ -77,6 +76,8 @@ public class JudgeService {
             } else {
                 execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command + " java Main"}, null, dirFile);
             }
+
+
             //获取执行信息
             InputStream fis = execProcess.getInputStream();
             InputStreamReader isr = new InputStreamReader(fis);
@@ -89,7 +90,15 @@ public class JudgeService {
             while ((line = br.readLine()) != null) {
                 arrayList.add(line);
             }
-            //执行完代码后。删除临时工作目录文件夹
+            //执行完代码后。删除源代码文件
+            codeFile.delete();
+            //删除.class 或者 .out文件
+            String compileFileName;
+            if (submission.getLanguage() == 1)
+                compileFileName = dirName + "/Main.out";
+            else compileFileName = dirName + "/Main.class";
+            new File(compileFileName).delete();
+            //删除临时文件夹
             dirFile.delete();
             //记录执行状态
             submission.setStatus(Integer.parseInt(arrayList.get(0)));
@@ -98,6 +107,9 @@ public class JudgeService {
                 //如果是正常通过，记录消耗内存和执行时间
                 submission.setConsume_memory(Integer.parseInt(arrayList.get(2)));
                 submission.setExec_time(Integer.parseInt(arrayList.get(1)));
+                //如果执行时间为0，则赋值为1
+                if (submission.getExec_time() == 0)
+                    submission.setExec_time(1);
             } else {
                 //如果不是正常通过，记录出错信息
                 if (arrayList.size() > 1 && arrayList.get(1) != null)
