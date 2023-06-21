@@ -218,8 +218,8 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Override
     public Boolean saveCode(Submission submission) {
         //如果提交记录中没有状态为0的记录，则新增一条状态为0的记录，如果有则修改就行
-        submission.setStatus(0);
-        int flag = 0;
+        submission.setStatus(new Integer(0));
+        Integer flag = 0;
         Submission searchSubmission = this.submissionMapper.searchSubmissionByStatusAndUserIdAndProblemId(submission);
         if (searchSubmission == null) {
             flag = this.submissionMapper.insertSubmission(submission);

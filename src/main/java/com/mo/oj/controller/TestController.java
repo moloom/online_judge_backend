@@ -1,32 +1,18 @@
 package com.mo.oj.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
-
-@Controller
+/**
+ * @author: mo
+ * @date: 2023/3/15 下午8:51
+ * @description: 测试用
+ */
+@RestController
 public class TestController {
-    @PostMapping("/api/t")
+
+    @RequestMapping("/test")
     public String test() {
-        System.out.println("收到了请求1");
-        return "Hello word!";
-    }
-
-    @RequestMapping("/")
-    @ResponseBody
-    public String test2() {
-        System.out.println("收到了请求2");
-        return "Hello word!2";
-    }
-
-    @GetMapping("/test")
-    @ResponseBody
-    public String test3(HttpServletRequest request) {
-        request.setAttribute("mmm", 520527);
-        System.out.println("getRequestURI:::\n\n"+request.getRequestURI());
-        return JSONArray.toJSONString("ss");
+        return "hello-1111";
     }
 }
