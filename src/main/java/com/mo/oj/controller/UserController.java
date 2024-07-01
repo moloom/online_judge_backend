@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Resource
@@ -131,7 +131,7 @@ public class UserController {
      */
     @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImage(String name) throws IOException {
-        File file = new File("/tem/picture/" + name);
+        File file = new File("/online_judge/picture/" + name);
         FileInputStream inputStream = new FileInputStream(file);
         byte[] bytes = new byte[inputStream.available()];
         inputStream.read(bytes, 0, inputStream.available());

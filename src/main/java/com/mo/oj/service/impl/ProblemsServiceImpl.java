@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,8 @@ public class ProblemsServiceImpl implements ProblemsService {
 
     @Resource
     SubmissionMapper submissionMapper;
+
+    String useCasePath = "/online_judge/useCaseDir/";
 
     //初始化线程池
     ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -253,19 +256,26 @@ public class ProblemsServiceImpl implements ProblemsService {
             flag = this.submissionMapper.updateSubmission(submission);
         }
         try {
-            String useCasePath = "/tem/useCaseDir/";
-            File useCaseFile = new File(useCasePath + submission.getProblem_id());
+            //测试用例文件夹
+            File useCaseDir = new File(useCasePath + submission.getProblem_id());
             //如果测试用例文件夹不存在，则创建测试用例文件
-            if (!useCaseFile.exists()) {
-                useCaseFile.mkdir();
+            if (!useCaseDir.exists()) {
+                useCaseDir.mkdir();
                 List<UseCases> useCasesList = this.problemsMapper.searchUseCaseList(submission.getProblem_id());
+                StringBuilder dataConfString = new StringBuilder();   //要写入data.conf文件的内容
+                dataConfString.append(useCasesList.size() * 2);     //或许测试用例生成的文件个数=测试用例个数*2
+                dataConfString.append("\n");
                 //循环写入测试用例文件
                 for (int i = 0; i < useCasesList.size(); ++i) {
-                    File in = new File(useCasePath + submission.getProblem_id() + "/" + i + 1 + ".in");
-                    File out = new File(useCasePath + submission.getProblem_id() + "/" + i + 1 + ".out");
-                    //创建文件
+                    //构建这对测试用例的绝对路径名
+                    File in = new File(useCaseDir + "/" + BigDecimal.valueOf(i + 1) + ".in");
+                    File out = new File(useCaseDir + "/" + BigDecimal.valueOf(i + 1) + ".out");
+                    //创建测试用例文件
                     in.createNewFile();
                     out.createNewFile();
+                    //把测试用例的绝对路径添加到data.conf中
+                    dataConfString.append(in.getAbsolutePath()).append("\n");
+                    dataConfString.append(out.getAbsolutePath()).append("\n").append("\n");
 
                     FileOutputStream fosIn = new FileOutputStream(in);
                     FileOutputStream fosOut = new FileOutputStream(out);
@@ -275,13 +285,15 @@ public class ProblemsServiceImpl implements ProblemsService {
                     fosIn.close();
                     fosOut.close();
                 }
-                //写完后，生成data.conf
-                Process execProcess = Runtime.getRuntime().exec("bash /tem/javaTest/judge/buildCaseDir " + useCaseFile);
-                if (execProcess.waitFor() == 1) {
-                    System.out.println("测试用例---data.conf生成失败！");
-                    return null;
-                }
+                //生成data.conf文件
+                File dataConfFile = new File(useCaseDir + "/" + "data.conf");
+                dataConfFile.createNewFile();
+                FileOutputStream fileOutputStream = new FileOutputStream(dataConfFile);
+                fileOutputStream.write(String.valueOf(dataConfString).getBytes(StandardCharsets.UTF_8));
+                fileOutputStream.close();
+
             }
+
             //开启多线程判题
 /*            FutureTask<Submission> futureTask = new FutureTask<Submission>(() -> {
                 return new JudgeService().judge(submission);

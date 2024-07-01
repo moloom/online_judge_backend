@@ -14,26 +14,32 @@ import java.util.Arrays;
  * @description: 判题服务
  */
 public class JudgeService {
-    private volatile String path = "/tem/temWorkSpace/";//工作目录
-    private volatile String[] language = {"", "c", "java"};//编程语言源文件的后缀
-    private volatile String useCaseDir = "/tem/useCaseDir/";//测试用例文件夹
+    private volatile String path = "/online_judge/temWorkSpace/";//工作目录
+    private final String[] language = {"", "c", "java"};//编程语言源文件的后缀
+    private final String useCaseDir = "/online_judge/useCaseDir/";//测试用例文件夹
 
+    /**
+     * @author moloom
+     * @Date 2022-4-14 13:42:52
+     * @param * @param: submission
+     * @return The result of judged program.
+     */
     public Submission judge(Submission submission) {
         try {
 //            System.out.println(Thread.currentThread().getName() + "----------" + this.toString());
             //生成一个20位的临时文件夹名称,
             String randomString = RandomString.getRandomString(20);
             //和工作目录拼接，成为此次提交的临时编译目录
-            String dirName = path + randomString;
-            File dirFile = new File(dirName);
+            String workDirString = path + randomString;
+            File workDirFile = new File(workDirString);
             //如果路径不存在，则创建路径
-            if (!dirFile.exists()) {
-                dirFile.mkdir();
+            if (!workDirFile.exists()) {
+                workDirFile.mkdir();
             }
             //源代码文件名
             String codeFileName = "Main." + language[submission.getLanguage()];
             //源代码全路径
-            String codeFullPath = dirName + "/" + codeFileName;
+            String codeFullPath = workDirString + "/" + codeFileName;
             //根据提交的语言类型，生成对应的源文件
             File codeFile = new File(codeFullPath);
             FileOutputStream fileOutputStream = new FileOutputStream(codeFile);
@@ -46,9 +52,9 @@ public class JudgeService {
             //编译代码
             Process compileProcess;
             if (submission.getLanguage() == 1) {
-                compileProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", "gcc " + codeFileName + " -o Main.out"}, null, dirFile);
+                compileProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", "gcc " + codeFileName + " -o Main.out"}, null, workDirFile);
             } else
-                compileProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", "javac " + codeFileName}, null, dirFile);
+                compileProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", "javac " + codeFileName}, null, workDirFile);
             //编译错误，保存错误信息，中断运行
             if (compileProcess.waitFor() == 1) {
                 //设置错误类型
@@ -68,13 +74,13 @@ public class JudgeService {
             }
             //编译成功，则评测代码
             //拼接执行语句
-            String command = "/tem/javaTest/judge/a.out -t 2000 -m 65536 -f 4096 --basedir " + dirName + " --datadir " + useCaseDir + submission.getProblem_id() + " --who 65534 --magic userOutput --end ";
+            String command = "/online_judge/oj-moj/a.out -t 2000 -m 65536 -f 4096 --basedir " + workDirString + " --datadir " + useCaseDir + submission.getProblem_id() + " --who 1000 --magic userOutput --end ";
             Process execProcess;
             if (submission.getLanguage() == 1) {
-//                execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command+"./Main.out"}, null, dirFile);
-                execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command + " ./Main.out"}, null, dirFile);
+//                execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command+"./Main.out"}, null, workDirFile);
+                execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command + " ./Main.out"}, null, workDirFile);
             } else {
-                execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command + " java Main"}, null, dirFile);
+                execProcess = Runtime.getRuntime().exec(new String[]{"bash", "-c", command + " java Main"}, null, workDirFile);
             }
 
 
@@ -95,11 +101,11 @@ public class JudgeService {
             //删除.class 或者 .out文件
             String compileFileName;
             if (submission.getLanguage() == 1)
-                compileFileName = dirName + "/Main.out";
-            else compileFileName = dirName + "/Main.class";
+                compileFileName = workDirString + "/Main.out";
+            else compileFileName = workDirString + "/Main.class";
             new File(compileFileName).delete();
             //删除临时文件夹
-            dirFile.delete();
+            workDirFile.delete();
             //记录执行状态
             submission.setStatus(Integer.parseInt(arrayList.get(0)));
             //判断执行状态，来记录执行信息

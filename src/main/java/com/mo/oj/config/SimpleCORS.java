@@ -9,7 +9,7 @@ import org.springframework.web.filter.CorsFilter;
 //@CrossOrigin(origins = {"http://localhost:8080", "null"})在controller类上使用，作用域只是当前类或方法。
 
 //CORS跨域配置类
-@Configuration
+//@Configuration
 public class SimpleCORS {
 
     private CorsConfiguration corsConfig() {
@@ -22,7 +22,7 @@ public class SimpleCORS {
         return corsConfiguration;
     }
 
-    @Bean
+//    @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig());

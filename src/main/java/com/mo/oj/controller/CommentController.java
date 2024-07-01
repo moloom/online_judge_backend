@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-@RequestMapping("/comment")
+@RequestMapping("/api/comment")
 @RestController
 public class CommentController {
 

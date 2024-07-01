@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/problems")
+@RequestMapping("/api/problems")
 public class ProblemController {
 
     @Resource

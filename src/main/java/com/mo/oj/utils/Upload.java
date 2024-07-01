@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class Upload {
 
-    private static String path = "/tem/picture";// 文件上传路径
+    private static final String path = "/online_judge/picture";// 文件上传路径
 
     public static String upload(MultipartFile upload) {
         //  获取要上传文件的文件名
