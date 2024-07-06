@@ -34,7 +34,7 @@ public class JudgeService {
             File workDirFile = new File(workDirString);
             //如果路径不存在，则创建路径
             if (!workDirFile.exists()) {
-                workDirFile.mkdir();
+                workDirFile.mkdirs();
             }
             //源代码文件名
             String codeFileName = "Main." + language[submission.getLanguage()];
@@ -93,9 +93,7 @@ public class JudgeService {
             ArrayList<String> arrayList = new ArrayList<String>();
             int i = 0;
             //直到读完为止
-            while ((line = br.readLine()) != null) {
-                arrayList.add(line);
-            }
+            while ((line = br.readLine()) != null) arrayList.add(line);
             //执行完代码后。删除源代码文件
             codeFile.delete();
             //删除.class 或者 .out文件

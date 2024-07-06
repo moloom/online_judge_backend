@@ -260,7 +260,7 @@ public class ProblemsServiceImpl implements ProblemsService {
             File useCaseDir = new File(useCasePath + submission.getProblem_id());
             //如果测试用例文件夹不存在，则创建测试用例文件
             if (!useCaseDir.exists()) {
-                useCaseDir.mkdir();
+                useCaseDir.mkdirs();
                 List<UseCases> useCasesList = this.problemsMapper.searchUseCaseList(submission.getProblem_id());
                 StringBuilder dataConfString = new StringBuilder();   //要写入data.conf文件的内容
                 dataConfString.append(useCasesList.size() * 2);     //或许测试用例生成的文件个数=测试用例个数*2

@@ -11,8 +11,8 @@ spring:
     host: redis           # Redis服务器地址
     database: 0               # Redis数据库索引（默认为0）
     port: 6379              # Redis服务器连接端口
-    username: mo
-    password: mo             # Redis服务器连接密码（默认为空）
+#    username: mo
+    password:              # Redis服务器连接密码（默认为空）
     timeout: 1000ms         # 连接超时时间
     lettuce:          #配置连接
       pool:
